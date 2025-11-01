@@ -5,25 +5,22 @@ import type { Category } from '../types';
 
 interface GitHubSyncProps {
   categories: Category[];
+  onImport: (data: Category[]) => void;
 }
 
-const GitHubSync: React.FC<GitHubSyncProps> = ({ categories }) => {
+const GitHubSync: React.FC<GitHubSyncProps> = ({ categories, onImport }) => {
   const [owner, setOwner] = useState('');
   const [repo, setRepo] = useState('');
   const [path, setPath] = useState('');
   const [token, setToken] = useState('');
   const [loading, setLoading] = useState(false);
+  const [action, setAction] = useState<'push' | 'pull' | null>(null);
   const [status, setStatus] = useState<{ type: 'success' | 'error' | 'info', message: string } | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!owner || !repo || !path || !token) {
-      setStatus({ type: 'error', message: 'All fields are required.' });
-      return;
-    }
-    
+  const handlePush = async () => {
+    setAction('push');
     setLoading(true);
-    setStatus({ type: 'info', message: 'Syncing...' });
+    setStatus({ type: 'info', message: 'Pushing data to GitHub...' });
 
     const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
     const headers = {
@@ -34,7 +31,6 @@ const GitHubSync: React.FC<GitHubSyncProps> = ({ categories }) => {
 
     try {
       let sha: string | undefined;
-      // 1. Get the current file to get its SHA for updating
       try {
         const getResponse = await fetch(apiUrl, { headers });
         if (getResponse.ok) {
@@ -44,13 +40,10 @@ const GitHubSync: React.FC<GitHubSyncProps> = ({ categories }) => {
            const errorData = await getResponse.json();
            throw new Error(`Failed to get file info: ${errorData.message || getResponse.statusText}`);
         }
-        // If 404, file doesn't exist, sha remains undefined, which is correct for file creation.
       } catch (err) {
-        // Log non-404 fetch errors but attempt to proceed, as it might be a new file.
         console.warn('Could not fetch existing file SHA, proceeding with creation attempt.', err);
       }
 
-      // 2. Prepare content and PUT request body. btoa(unescape(encodeURIComponent(str))) is a robust way to Base64 encode UTF-8 strings.
       const content = btoa(unescape(encodeURIComponent(JSON.stringify(categories, null, 2))));
       const body = JSON.stringify({
         message: `Sync: Digital Defense Checklist update ${new Date().toISOString()}`,
@@ -58,7 +51,6 @@ const GitHubSync: React.FC<GitHubSyncProps> = ({ categories }) => {
         sha: sha,
       });
 
-      // 3. Push the new content to GitHub
       const putResponse = await fetch(apiUrl, {
         method: 'PUT',
         headers: {...headers, 'Content-Type': 'application/json'},
@@ -70,21 +62,85 @@ const GitHubSync: React.FC<GitHubSyncProps> = ({ categories }) => {
         throw new Error(`GitHub API Error: ${errorData.message || putResponse.statusText}`);
       }
 
-      setStatus({ type: 'success', message: 'Successfully synced to GitHub!' });
+      setStatus({ type: 'success', message: 'Successfully pushed to GitHub!' });
 
     } catch (error) {
-      console.error('GitHub Sync Error:', error);
-      setStatus({ type: 'error', message: (error as Error).message || 'An unknown error occurred.' });
+      console.error('GitHub Push Error:', error);
+      setStatus({ type: 'error', message: (error as Error).message || 'An unknown error occurred during push.' });
     } finally {
       setLoading(false);
+      setAction(null);
+    }
+  };
+  
+  const handlePull = async () => {
+    setAction('pull');
+    setLoading(true);
+    setStatus({ type: 'info', message: 'Pulling data from GitHub...' });
+
+    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+    const headers = {
+      'Authorization': `token ${token}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'X-GitHub-Api-Version': '2022-11-28'
+    };
+
+    try {
+        const response = await fetch(apiUrl, { headers });
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`Failed to fetch file: ${errorData.message || response.statusText}`);
+        }
+        
+        const fileData = await response.json();
+        if (fileData.encoding !== 'base64') {
+            throw new Error('File encoding is not base64.');
+        }
+        
+        // Decode and parse the content
+        const decodedContent = decodeURIComponent(escape(atob(fileData.content)));
+        const parsedData = JSON.parse(decodedContent);
+
+        // Basic validation
+        if (Array.isArray(parsedData) && parsedData.length > 0 && parsedData[0].id && parsedData[0].title && Array.isArray(parsedData[0].items)) {
+           if (window.confirm('Are you sure you want to import data from GitHub? This will overwrite your current checklist.')) {
+             onImport(parsedData);
+             setStatus({ type: 'success', message: 'Successfully pulled and updated from GitHub!' });
+           } else {
+             setStatus({ type: 'info', message: 'Pull operation cancelled.' });
+           }
+        } else {
+            throw new Error('Fetched file has invalid format.');
+        }
+
+    } catch (error) {
+      console.error('GitHub Pull Error:', error);
+      setStatus({ type: 'error', message: (error as Error).message || 'An unknown error occurred during pull.' });
+    } finally {
+      setLoading(false);
+      setAction(null);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent, submitAction: 'push' | 'pull') => {
+    e.preventDefault();
+    if (!owner || !repo || !path || !token) {
+      setStatus({ type: 'error', message: 'All fields are required.' });
+      return;
+    }
+    
+    if (submitAction === 'push') {
+        handlePush();
+    } else {
+        handlePull();
     }
   };
 
   return (
     <Card>
         <h3 className="text-xl font-bold text-white mb-4">Sync to GitHub</h3>
-        <p className="text-sm text-gray-400 mb-4">Push your current checklist data to a file in a GitHub repository. You'll need a <a href="https://github.com/settings/tokens/new?scopes=repo" target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:underline">Personal Access Token (PAT)</a> with `repo` scope.</p>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <p className="text-sm text-gray-400 mb-4">Push or pull your checklist data to a file in a GitHub repository. You'll need a <a href="https://github.com/settings/tokens/new?scopes=repo" target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:underline">Personal Access Token (PAT)</a> with `repo` scope.</p>
+        <form className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label htmlFor="github-owner" className="block text-sm font-medium text-gray-400">Owner</label>
@@ -103,13 +159,22 @@ const GitHubSync: React.FC<GitHubSyncProps> = ({ categories }) => {
                 <label htmlFor="github-token" className="block text-sm font-medium text-gray-400">Personal Access Token (PAT)</label>
                 <input type="password" id="github-token" value={token} onChange={e => setToken(e.target.value)} className="mt-1 block w-full input-style" placeholder="ghp_..." />
             </div>
-            <div>
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
                 <button
-                    type="submit"
+                    type="button"
+                    onClick={(e) => handleSubmit(e, 'pull')}
                     disabled={loading}
-                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="flex-1 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                    {loading ? 'Syncing...' : 'Push to GitHub'}
+                    {loading && action === 'pull' ? 'Pulling...' : 'Pull from GitHub'}
+                </button>
+                <button
+                    type="button"
+                    onClick={(e) => handleSubmit(e, 'push')}
+                    disabled={loading}
+                    className="flex-1 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                    {loading && action === 'push' ? 'Pushing...' : 'Push to GitHub'}
                 </button>
             </div>
             {status && (

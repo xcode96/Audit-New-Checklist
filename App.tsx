@@ -14,7 +14,7 @@ import EditChecklistItemModal from './components/EditChecklistItemModal';
 import EditCategoryModal from './components/EditCategoryModal';
 import ImportExportControls from './components/ImportExportControls';
 import GitHubSync from './components/GitHubSync';
-import { CATEGORIES as INITIAL_CATEGORIES } from './constants';
+import { getInitialCategories } from './constants';
 import { ICON_MAP } from './components/icons';
 import type { Category, ChecklistItem, IconName } from './types';
 
@@ -28,10 +28,10 @@ const App: React.FC = () => {
           return parsedState;
         }
       }
-      return INITIAL_CATEGORIES;
+      return getInitialCategories();
     } catch (error) {
       console.error("Could not parse state from localStorage", error);
-      return INITIAL_CATEGORIES;
+      return getInitialCategories();
     }
   });
 
@@ -235,7 +235,7 @@ const App: React.FC = () => {
                         <AddCategoryForm onAddCategory={handleAddCategory} />
                         <div className="space-y-8">
                             <ImportExportControls categories={categories} onImport={handleImportData} />
-                            <GitHubSync categories={categories} />
+                            <GitHubSync categories={categories} onImport={handleImportData} />
                         </div>
                     </div>
                 </div>
