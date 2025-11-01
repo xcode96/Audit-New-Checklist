@@ -2218,5 +2218,17 @@
         "ignored": false
       }
     ]
+  },
+  {
+    "title": "d",
+    "description": "sd",
+    "longDescription": "dsc",
+    "color": "#facc15",
+    "iconName": "UserIcon",
+    "id": "d",
+    "completed": 0,
+    "total": 0,
+    "items": [],
+    "textColor": "text-[#facc15]"
   }
 ]
