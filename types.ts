@@ -13,15 +13,21 @@ export interface ChecklistItem {
   ignored: boolean;
 }
 
-export interface Category {
+// Represents the pure data structure, safe for JSON serialization
+export interface RawCategory {
   id: string;
   title: string;
   description: string;
   longDescription: string;
   iconName: IconName;
-  icon: React.FC<React.SVGProps<SVGSVGElement>>;
   color: string;
-  textColor: string;
+  items: Omit<ChecklistItem, 'completed' | 'ignored'>[];
+}
+
+
+// Represents the hydrated data structure used in the application state
+export interface Category extends Omit<RawCategory, 'items'> {
+  icon: React.FC<React.SVGProps<SVGSVGElement>>;
   completed: number;
   total: number;
   items: ChecklistItem[];

@@ -1,18 +1,20 @@
 
 import React from 'react';
 import Card from './Card';
-import type { Category } from '../types';
+import type { Category, RawCategory } from '../types';
+import { sanitizeCategoriesForStorage } from '../constants';
 
 interface ImportExportControlsProps {
   categories: Category[];
-  onImport: (data: Category[]) => void;
+  onImport: (data: RawCategory[]) => void;
 }
 
 const ImportExportControls: React.FC<ImportExportControlsProps> = ({ categories, onImport }) => {
 
   const handleExport = () => {
     try {
-      const dataStr = JSON.stringify(categories, null, 2);
+      const storableData = sanitizeCategoriesForStorage(categories);
+      const dataStr = JSON.stringify(storableData, null, 2);
       const dataBlob = new Blob([dataStr], { type: 'application/json' });
       const url = URL.createObjectURL(dataBlob);
       const link = document.createElement('a');
@@ -41,7 +43,7 @@ const ImportExportControls: React.FC<ImportExportControlsProps> = ({ categories,
         }
         const parsedData = JSON.parse(text);
 
-        // Basic validation
+        // Basic validation for RawCategory structure
         if (Array.isArray(parsedData) && parsedData.length > 0 && parsedData[0].id && parsedData[0].title && Array.isArray(parsedData[0].items)) {
            if (window.confirm('Are you sure you want to import this data? This will overwrite your current checklist.')) {
              onImport(parsedData);

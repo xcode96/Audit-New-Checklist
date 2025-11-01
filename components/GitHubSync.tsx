@@ -1,11 +1,12 @@
 
 import React, { useState } from 'react';
 import Card from './Card';
-import type { Category } from '../types';
+import type { Category, RawCategory } from '../types';
+import { sanitizeCategoriesForStorage } from '../constants';
 
 interface GitHubSyncProps {
   categories: Category[];
-  onImport: (data: Category[]) => void;
+  onImport: (data: RawCategory[]) => void;
 }
 
 const GitHubSync: React.FC<GitHubSyncProps> = ({ categories, onImport }) => {
@@ -43,8 +44,9 @@ const GitHubSync: React.FC<GitHubSyncProps> = ({ categories, onImport }) => {
       } catch (err) {
         console.warn('Could not fetch existing file SHA, proceeding with creation attempt.', err);
       }
-
-      const content = btoa(unescape(encodeURIComponent(JSON.stringify(categories, null, 2))));
+      
+      const storableData = sanitizeCategoriesForStorage(categories);
+      const content = btoa(unescape(encodeURIComponent(JSON.stringify(storableData, null, 2))));
       const body = JSON.stringify({
         message: `Sync: Digital Defense Checklist update ${new Date().toISOString()}`,
         content: content,
@@ -97,9 +99,14 @@ const GitHubSync: React.FC<GitHubSyncProps> = ({ categories, onImport }) => {
             throw new Error('File encoding is not base64.');
         }
         
-        // Decode and parse the content
-        const decodedContent = decodeURIComponent(escape(atob(fileData.content)));
-        const parsedData = JSON.parse(decodedContent);
+        let parsedData;
+        try {
+            const decodedContent = decodeURIComponent(escape(atob(fileData.content)));
+            parsedData = JSON.parse(decodedContent);
+        } catch(e) {
+            console.error("JSON Parsing Error on Pull:", e);
+            throw new Error("The file from GitHub is not valid JSON. Please ensure the 'File Path' points to a correct checklist data file, not a source code file.");
+        }
 
         // Basic validation
         if (Array.isArray(parsedData) && parsedData.length > 0 && parsedData[0].id && parsedData[0].title && Array.isArray(parsedData[0].items)) {

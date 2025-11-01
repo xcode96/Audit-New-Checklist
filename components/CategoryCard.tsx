@@ -29,7 +29,7 @@ const SmallCircularProgress: React.FC<{ percentage: number; color: string }> = (
 };
 
 const CategoryCard: React.FC<CategoryCardProps> = ({ category, onClick }) => {
-  const { id, title, description, icon: Icon, color, completed, total, textColor, items } = category;
+  const { id, title, description, icon: Icon, color, completed, total, items } = category;
   const ignoredCount = items.filter(i => i.ignored).length;
   const effectiveTotal = total - ignoredCount;
   const progress = effectiveTotal > 0 ? Math.round((completed / effectiveTotal) * 100) : 0;
@@ -44,7 +44,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, onClick }) => {
                 </div>
                 <SmallCircularProgress percentage={progress} color={color} />
             </div>
-            <h3 className={`mt-4 text-lg font-bold ${textColor}`}>{title}</h3>
+            <h3 className="mt-4 text-lg font-bold" style={{ color: color }}>{title}</h3>
             <p className="mt-1 text-sm text-gray-400">{description}</p>
         </div>
         <div className="mt-4">

@@ -14,26 +14,41 @@ import EditChecklistItemModal from './components/EditChecklistItemModal';
 import EditCategoryModal from './components/EditCategoryModal';
 import ImportExportControls from './components/ImportExportControls';
 import GitHubSync from './components/GitHubSync';
-import { getInitialCategories } from './constants';
+import { processRawCategories, sanitizeCategoriesForStorage } from './constants';
 import { ICON_MAP } from './components/icons';
-import type { Category, ChecklistItem, IconName } from './types';
+import type { Category, ChecklistItem, IconName, RawCategory } from './types';
 
 const App: React.FC = () => {
-  const [categories, setCategories] = useState<Category[]>(() => {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load initial data from localStorage or fetch default
+  useEffect(() => {
     try {
       const savedState = localStorage.getItem('digitalDefenseState');
       if (savedState) {
-        const parsedState = JSON.parse(savedState);
-        if (Array.isArray(parsedState) && parsedState.length > 0 && parsedState[0].items) {
-          return parsedState;
-        }
+        const parsedState: RawCategory[] = JSON.parse(savedState);
+        setCategories(processRawCategories(parsedState));
+      } else {
+        // Fallback to fetching from public file if nothing in localStorage
+         fetch('/checklist.json')
+          .then(res => res.json())
+          .then((data: RawCategory[]) => {
+            setCategories(processRawCategories(data));
+          });
       }
-      return getInitialCategories();
     } catch (error) {
-      console.error("Could not parse state from localStorage", error);
-      return getInitialCategories();
+      console.error("Could not parse state from localStorage, loading default.", error);
+       fetch('/checklist.json')
+          .then(res => res.json())
+          .then((data: RawCategory[]) => {
+            setCategories(processRawCategories(data));
+          });
+    } finally {
+        setIsLoading(false);
     }
-  });
+  }, []);
+
 
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
@@ -44,12 +59,15 @@ const App: React.FC = () => {
 
 
   useEffect(() => {
-    try {
-      localStorage.setItem('digitalDefenseState', JSON.stringify(categories));
-    } catch (error) {
-      console.error("Could not save state to localStorage", error);
+    if (!isLoading) {
+        try {
+            const storableCategories = sanitizeCategoriesForStorage(categories);
+            localStorage.setItem('digitalDefenseState', JSON.stringify(storableCategories));
+        } catch (error) {
+            console.error("Could not save state to localStorage", error);
+        }
     }
-  }, [categories]);
+  }, [categories, isLoading]);
 
   const handleLogin = (password: string): boolean => {
     if (password === 'password') {
@@ -109,17 +127,14 @@ const App: React.FC = () => {
   };
 
   // Category CRUD
-  const handleAddCategory = (newCategoryData: Omit<Category, 'id' | 'completed' | 'total' | 'items' | 'icon' | 'textColor'>) => {
-    const newCategory: Category = {
+  const handleAddCategory = (newCategoryData: Omit<Category, 'id' | 'completed' | 'total' | 'items' | 'icon'>) => {
+    const rawNewCategory: RawCategory = {
         ...newCategoryData,
         id: newCategoryData.title.toLowerCase().replace(/\s+/g, '-'),
-        completed: 0,
-        total: 0,
         items: [],
-        icon: ICON_MAP[newCategoryData.iconName as IconName],
-        textColor: `text-[${newCategoryData.color}]` // This might need a better approach for Tailwind
     };
-    setCategories(prev => [...prev, newCategory]);
+    const processedNewCategory = processRawCategories([rawNewCategory])[0];
+    setCategories(prev => [...prev, processedNewCategory]);
   };
   
   const handleEditCategory = (updatedCategoryData: Category) => {
@@ -180,10 +195,14 @@ const App: React.FC = () => {
     );
   };
   
-  const handleImportData = (importedData: Category[]) => {
-    setCategories(importedData);
+  const handleImportData = (importedData: RawCategory[]) => {
+    setCategories(processRawCategories(importedData));
     alert('Data imported successfully!');
   };
+
+  if (isLoading) {
+    return <div className="flex justify-center items-center min-h-screen bg-[#1a1e26] text-white">Loading...</div>;
+  }
 
   const selectedCategory = categories.find(c => c.id === selectedCategoryId);
 

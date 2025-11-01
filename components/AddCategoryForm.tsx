@@ -5,7 +5,7 @@ import { ICON_MAP } from './icons';
 import Card from './Card';
 
 interface AddCategoryFormProps {
-    onAddCategory: (newCategoryData: Omit<Category, 'id' | 'completed' | 'total' | 'items' | 'icon' | 'textColor'>) => void;
+    onAddCategory: (newCategoryData: Omit<Category, 'id' | 'completed' | 'total' | 'items' | 'icon'>) => void;
 }
 
 const AddCategoryForm: React.FC<AddCategoryFormProps> = ({ onAddCategory }) => {
