@@ -12,6 +12,8 @@ import LoginModal from './components/LoginModal';
 import AddCategoryForm from './components/AddCategoryForm';
 import EditChecklistItemModal from './components/EditChecklistItemModal';
 import EditCategoryModal from './components/EditCategoryModal';
+import ImportExportControls from './components/ImportExportControls';
+import GitHubSync from './components/GitHubSync';
 import { CATEGORIES as INITIAL_CATEGORIES } from './constants';
 import { ICON_MAP } from './components/icons';
 import type { Category, ChecklistItem, IconName } from './types';
@@ -135,7 +137,6 @@ const App: React.FC = () => {
     }
   };
 
-
   // Toggles and Resets
   const handleToggleComplete = (categoryId: string, itemId: string, isCompleted: boolean) => {
     setCategories(prevCategories =>
@@ -167,7 +168,7 @@ const App: React.FC = () => {
     );
   };
   
-  const handleResetCategory = (categoryId: string) => {
+  const handleResetProgress = (categoryId: string) => {
     setCategories(prevCategories =>
       prevCategories.map(category => {
         if (category.id === categoryId) {
@@ -177,6 +178,11 @@ const App: React.FC = () => {
         return category;
       })
     );
+  };
+  
+  const handleImportData = (importedData: Category[]) => {
+    setCategories(importedData);
+    alert('Data imported successfully!');
   };
 
   const selectedCategory = categories.find(c => c.id === selectedCategoryId);
@@ -205,7 +211,7 @@ const App: React.FC = () => {
             onBack={() => setSelectedCategoryId(null)}
             onToggleComplete={handleToggleComplete}
             onToggleIgnore={handleToggleIgnore}
-            onResetFilters={handleResetCategory}
+            onResetProgress={handleResetProgress}
             isAdminLoggedIn={isAdminLoggedIn}
             onAddNewItem={handleAddNewItem}
             onEditItemClick={(item) => setEditingItem({ categoryId: selectedCategory.id, item })}
@@ -221,11 +227,20 @@ const App: React.FC = () => {
               <RadarChartCard data={radarChartData} />
               <BarChartListCard categories={categories} />
             </div>
+            
             {isAdminLoggedIn && (
                 <div className="mt-8">
-                    <AddCategoryForm onAddCategory={handleAddCategory} />
+                    <h2 className="text-2xl font-bold text-white mb-4">Admin Tools</h2>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <AddCategoryForm onAddCategory={handleAddCategory} />
+                        <div className="space-y-8">
+                            <ImportExportControls categories={categories} onImport={handleImportData} />
+                            <GitHubSync categories={categories} />
+                        </div>
+                    </div>
                 </div>
             )}
+
             <div className="mt-8">
               <CategoryGrid categories={categories} onCategoryClick={setSelectedCategoryId} />
             </div>

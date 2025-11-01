@@ -1,16 +1,17 @@
 
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import type { Category, ChecklistItem } from '../types';
 import Card from './Card';
 import ChecklistItemRow from './ChecklistItemRow';
 import AddChecklistItemForm from './AddChecklistItemForm';
+import FilterPanel from './FilterPanel';
 
 interface CategoryDetailProps {
   category: Category;
   onBack: () => void;
   onToggleComplete: (categoryId: string, itemId: string, completed: boolean) => void;
   onToggleIgnore: (categoryId: string, itemId: string, ignored: boolean) => void;
-  onResetFilters: (categoryId: string) => void;
+  onResetProgress: (categoryId: string) => void;
   isAdminLoggedIn: boolean;
   onAddNewItem: (categoryId: string, newItem: Omit<ChecklistItem, 'id' |'completed' | 'ignored'>) => void;
   onEditItemClick: (item: ChecklistItem) => void;
@@ -37,17 +38,49 @@ const TrashIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 
 
 const CategoryDetail: React.FC<CategoryDetailProps> = ({ 
-    category, onBack, onToggleComplete, onToggleIgnore, onResetFilters, 
+    category, onBack, onToggleComplete, onToggleIgnore, onResetProgress, 
     isAdminLoggedIn, onAddNewItem, onEditItemClick, onDeleteItem,
     onEditCategoryClick, onDeleteCategory
 }) => {
     const { id, title, longDescription, items, icon: Icon, color } = category;
     
+    const [isFilterVisible, setIsFilterVisible] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [statusFilter, setStatusFilter] = useState<'all' | 'done' | 'not-done' | 'ignored'>('all');
+    const [priorityFilters, setPriorityFilters] = useState<ChecklistItem['priority'][]>([]);
+
     const completedCount = items.filter(i => i.completed).length;
     const ignoredCount = items.filter(i => i.ignored).length;
     const totalCount = items.length;
     const effectiveTotal = totalCount - ignoredCount;
     const percentage = effectiveTotal > 0 ? Math.round((completedCount / effectiveTotal) * 100) : 0;
+
+    const filteredItems = useMemo(() => {
+        return items
+            .filter(item => { // Status filter
+                if (statusFilter === 'all') return true;
+                if (statusFilter === 'done') return item.completed;
+                if (statusFilter === 'not-done') return !item.completed && !item.ignored;
+                if (statusFilter === 'ignored') return item.ignored;
+                return true;
+            })
+            .filter(item => { // Priority filter
+                if (priorityFilters.length === 0) return true;
+                return priorityFilters.includes(item.priority);
+            })
+            .filter(item => { // Search term filter
+                if (!searchTerm.trim()) return true;
+                const lowerSearchTerm = searchTerm.toLowerCase();
+                return item.security.toLowerCase().includes(lowerSearchTerm) ||
+                       item.details.toLowerCase().includes(lowerSearchTerm);
+            });
+    }, [items, statusFilter, priorityFilters, searchTerm]);
+    
+    const resetFilters = () => {
+        setSearchTerm('');
+        setStatusFilter('all');
+        setPriorityFilters([]);
+    };
 
     const handleAddItem = (newItem: Omit<ChecklistItem, 'id' | 'completed' | 'ignored'>) => {
         onAddNewItem(id, newItem);
@@ -85,15 +118,15 @@ const CategoryDetail: React.FC<CategoryDetailProps> = ({
 
                     <div className="mt-6">
                         <div className="flex flex-col sm:flex-row justify-between sm:items-center text-sm text-gray-400">
-                            <p>{completedCount} out of {totalCount} ({percentage}%) complete, {ignoredCount} ignored</p>
+                             <p>{completedCount} out of {totalCount} ({percentage}%) complete, {ignoredCount} ignored. <span className="hidden sm:inline">Showing {filteredItems.length} items.</span></p>
                             <div className="flex space-x-2 mt-2 sm:mt-0">
-                                <button onClick={() => onResetFilters(id)} className="flex items-center space-x-2 px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-md text-xs font-semibold transition-colors">
+                                <button onClick={resetFilters} className="flex items-center space-x-2 px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-md text-xs font-semibold transition-colors">
                                     <XIcon className="w-3 h-3"/>
-                                    <span>RESET</span>
+                                    <span>RESET FILTERS</span>
                                 </button>
-                                <button className="flex items-center space-x-2 px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-md text-xs font-semibold transition-colors">
+                                <button onClick={() => setIsFilterVisible(!isFilterVisible)} className="flex items-center space-x-2 px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-md text-xs font-semibold transition-colors">
                                     <FilterIcon className="w-3 h-3"/>
-                                    <span>FILTERS</span>
+                                    <span>{isFilterVisible ? 'HIDE FILTERS' : 'SHOW FILTERS'}</span>
                                 </button>
                             </div>
                         </div>
@@ -102,6 +135,17 @@ const CategoryDetail: React.FC<CategoryDetailProps> = ({
                         </div>
                     </div>
                     
+                    {isFilterVisible && (
+                        <FilterPanel 
+                            searchTerm={searchTerm}
+                            onSearchTermChange={setSearchTerm}
+                            statusFilter={statusFilter}
+                            onStatusFilterChange={setStatusFilter}
+                            priorityFilters={priorityFilters}
+                            onPriorityFilterChange={setPriorityFilters}
+                        />
+                    )}
+
                     <div className="mt-8">
                         <div className="hidden sm:grid grid-cols-[auto_minmax(150px,25%)_minmax(100px,auto)_1fr_auto] gap-4 px-4 py-2 border-b border-gray-700 text-xs text-gray-500 font-bold uppercase tracking-wider">
                            <div className="text-center">Done?</div>
@@ -111,17 +155,21 @@ const CategoryDetail: React.FC<CategoryDetailProps> = ({
                            {isAdminLoggedIn && <div>Actions</div>}
                         </div>
                         <div>
-                            {items.map(item => (
-                                <ChecklistItemRow 
-                                    key={item.id} 
-                                    item={item}
-                                    onToggleComplete={(itemId, completed) => onToggleComplete(id, itemId, completed)}
-                                    onToggleIgnore={(itemId, ignored) => onToggleIgnore(id, itemId, ignored)}
-                                    isAdminLoggedIn={isAdminLoggedIn}
-                                    onEditClick={() => onEditItemClick(item)}
-                                    onDeleteClick={() => onDeleteItem(id, item.id)}
-                                />
-                            ))}
+                            {filteredItems.length > 0 ? (
+                                filteredItems.map(item => (
+                                    <ChecklistItemRow 
+                                        key={item.id} 
+                                        item={item}
+                                        onToggleComplete={(itemId, completed) => onToggleComplete(id, itemId, completed)}
+                                        onToggleIgnore={(itemId, ignored) => onToggleIgnore(id, itemId, ignored)}
+                                        isAdminLoggedIn={isAdminLoggedIn}
+                                        onEditClick={() => onEditItemClick(item)}
+                                        onDeleteClick={() => onDeleteItem(id, item.id)}
+                                    />
+                                ))
+                            ) : (
+                                <p className="text-center text-gray-500 py-8">No items match your filters.</p>
+                            )}
                         </div>
                     </div>
                 </div>
