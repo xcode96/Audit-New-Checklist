@@ -2,14 +2,16 @@
 import React from 'react';
 import Card from './Card';
 import CircularProgress from './CircularProgress';
-import type { Category } from '../types';
+import type { Category, ChecklistItem } from '../types';
 
 interface ProgressCardProps {
   categories: Category[];
 }
 
 const ProgressCard: React.FC<ProgressCardProps> = ({ categories }) => {
-  const allItems = categories.flatMap(c => c.items);
+  const allItems: ChecklistItem[] = categories.flatMap(c => 
+    c.domains.length > 0 ? c.domains.flatMap(d => d.items) : c.items
+  );
 
   const totalCompleted = allItems.filter(item => item.status === 'Done').length;
   const totalItems = allItems.length;

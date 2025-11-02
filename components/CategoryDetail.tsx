@@ -1,22 +1,26 @@
 
 import React, { useState, useMemo } from 'react';
-import type { Category, ChecklistItem, Status, Result } from '../types';
+import type { Category, ChecklistItem, Status, Result, Domain } from '../types';
 import Card from './Card';
 import ChecklistItemRow from './ChecklistItemRow';
 import AddChecklistItemForm from './AddChecklistItemForm';
 import FilterPanel from './FilterPanel';
+import AddDomainForm from './AddDomainForm';
+
 
 interface CategoryDetailProps {
-  category: Category;
+  data: Category | Domain;
+  path: string[];
+  breadcrumbs: { title: string, path: string[] }[];
   onBack: () => void;
-  onUpdateItem: (itemId: string, updatedItem: ChecklistItem) => void;
-  onResetProgress: (categoryId: string) => void;
+  onUpdateItem: (updatedItem: ChecklistItem) => void;
   isAdminLoggedIn: boolean;
-  onAddNewItem: (categoryId: string, newItem: Omit<ChecklistItem, 'id' | 'status' | 'result' | 'observation' | 'evidence'>) => void;
+  onAddNewItem: (newItem: Omit<ChecklistItem, 'id' | 'status' | 'result' | 'observation' | 'evidence'>) => void;
   onEditItemClick: (item: ChecklistItem) => void;
-  onDeleteItem: (categoryId: string, itemId: string) => void;
-  onEditCategoryClick: (category: Category) => void;
-  onDeleteCategory: (categoryId: string) => void;
+  onDeleteItem: (itemId: string) => void;
+  onEditCategoryClick: () => void;
+  onDeleteCategoryClick: () => void;
+  onAddDomain: (newDomainData: Omit<Domain, 'id' | 'completed' | 'total' | 'items' | 'domains' | 'icon' | 'color'>) => void;
 }
 
 const ArrowLeftIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
@@ -37,11 +41,11 @@ const TrashIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 
 
 const CategoryDetail: React.FC<CategoryDetailProps> = ({ 
-    category, onBack, onUpdateItem, onResetProgress, 
+    data, path, breadcrumbs, onBack, onUpdateItem, 
     isAdminLoggedIn, onAddNewItem, onEditItemClick, onDeleteItem,
-    onEditCategoryClick, onDeleteCategory
+    onEditCategoryClick, onDeleteCategoryClick, onAddDomain
 }) => {
-    const { id, title, longDescription, items, icon: Icon, color } = category;
+    const { id, title, longDescription, items, icon: Icon, color } = data;
     
     const [isFilterVisible, setIsFilterVisible] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -57,42 +61,27 @@ const CategoryDetail: React.FC<CategoryDetailProps> = ({
 
     const filteredItems = useMemo(() => {
         return items
-            .filter(item => { // Status filter
-                if (statusFilters.length === 0) return true;
-                return statusFilters.includes(item.status);
-            })
-            .filter(item => { // Result filter
-                if (resultFilters.length === 0) return true;
-                return resultFilters.includes(item.result);
-            })
-            .filter(item => { // Priority filter
-                if (priorityFilters.length === 0) return true;
-                return priorityFilters.includes(item.priority);
-            })
-            .filter(item => { // Search term filter
+            .filter(item => statusFilters.length === 0 || statusFilters.includes(item.status))
+            .filter(item => resultFilters.length === 0 || resultFilters.includes(item.result))
+            .filter(item => priorityFilters.length === 0 || priorityFilters.includes(item.priority))
+            .filter(item => {
                 if (!searchTerm.trim()) return true;
                 const lowerSearchTerm = searchTerm.toLowerCase();
-                return item.security.toLowerCase().includes(lowerSearchTerm) ||
-                       item.details.toLowerCase().includes(lowerSearchTerm);
+                return item.security.toLowerCase().includes(lowerSearchTerm) || item.details.toLowerCase().includes(lowerSearchTerm);
             });
     }, [items, statusFilters, resultFilters, priorityFilters, searchTerm]);
     
     const resetFilters = () => {
-        setSearchTerm('');
-        setStatusFilters([]);
-        setResultFilters([]);
-        setPriorityFilters([]);
+        setSearchTerm(''); setStatusFilters([]); setResultFilters([]); setPriorityFilters([]);
     };
 
-    const handleAddItem = (newItem: Omit<ChecklistItem, 'id' | 'status' | 'result' | 'observation' | 'evidence'>) => {
-        onAddNewItem(id, newItem);
-    };
+    const isFolderEmpty = data.items.length === 0 && data.domains.length === 0;
 
     return (
         <div>
              <button onClick={onBack} className="flex items-center space-x-2 text-gray-400 hover:text-white mb-6 font-semibold">
                 <ArrowLeftIcon className="w-5 h-5" />
-                <span>Back to Dashboard</span>
+                <span>{path.length > 1 ? `Back to ${breadcrumbs[breadcrumbs.length - 2].title}` : 'Back to Dashboard'}</span>
             </button>
             <Card>
                 <div className="p-2 sm:p-6">
@@ -102,82 +91,68 @@ const CategoryDetail: React.FC<CategoryDetailProps> = ({
                                 <Icon className="w-10 h-10" style={{color: color}} />
                             </div>
                             <div className="mt-4 sm:mt-0">
-                                <h1 className="text-3xl font-bold text-white">{title}</h1>
+                                <h1 className="text-2xl md:text-3xl font-bold text-white break-all">
+                                    {breadcrumbs.map(b => b.title).join(' / ')}
+                                </h1>
                                 <p className="text-gray-400 mt-1">{longDescription}</p>
                             </div>
                         </div>
                          {isAdminLoggedIn && (
                             <div className="flex space-x-2 flex-shrink-0 ml-4">
-                                <button onClick={() => onEditCategoryClick(category)} className="p-2 text-gray-400 hover:text-white transition-colors" aria-label="Edit Category">
+                                <button onClick={onEditCategoryClick} className="p-2 text-gray-400 hover:text-white transition-colors" aria-label="Edit Category">
                                     <EditIcon className="w-5 h-5"/>
                                 </button>
-                                <button onClick={() => onDeleteCategory(id)} className="p-2 text-gray-400 hover:text-rose-500 transition-colors" aria-label="Delete Category">
+                                <button onClick={onDeleteCategoryClick} className="p-2 text-gray-400 hover:text-rose-500 transition-colors" aria-label="Delete Category">
                                     <TrashIcon className="w-5 h-5"/>
                                 </button>
                             </div>
                         )}
                     </div>
-
-                    <div className="mt-6">
-                        <div className="flex flex-col sm:flex-row justify-between sm:items-center text-sm text-gray-400">
-                             <p>{completedCount} out of {totalCount} ({percentage}%) complete, {ignoredCount} ignored. <span className="hidden sm:inline">Showing {filteredItems.length} items.</span></p>
-                            <div className="flex space-x-2 mt-2 sm:mt-0">
-                                <button onClick={resetFilters} className="flex items-center space-x-2 px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-md text-xs font-semibold transition-colors">
-                                    <XIcon className="w-3 h-3"/>
-                                    <span>RESET FILTERS</span>
-                                </button>
-                                <button onClick={() => setIsFilterVisible(!isFilterVisible)} className="flex items-center space-x-2 px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-md text-xs font-semibold transition-colors">
-                                    <FilterIcon className="w-3 h-3"/>
-                                    <span>{isFilterVisible ? 'HIDE FILTERS' : 'SHOW FILTERS'}</span>
-                                </button>
-                            </div>
-                        </div>
-                        <div className="w-full bg-gray-700 rounded-full h-2 mt-2">
-                            <div className="h-2 rounded-full transition-all duration-500" style={{ width: `${percentage}%`, backgroundColor: color }}></div>
-                        </div>
-                    </div>
                     
-                    {isFilterVisible && (
-                        <FilterPanel 
-                            searchTerm={searchTerm}
-                            onSearchTermChange={setSearchTerm}
-                            statusFilters={statusFilters}
-                            onStatusFilterChange={setStatusFilters}
-                            resultFilters={resultFilters}
-                            onResultFilterChange={setResultFilters}
-                            priorityFilters={priorityFilters}
-                            onPriorityFilterChange={setPriorityFilters}
-                        />
-                    )}
+                    {!isFolderEmpty && (
+                        <>
+                            <div className="mt-6">
+                                <div className="flex flex-col sm:flex-row justify-between sm:items-center text-sm text-gray-400">
+                                    <p>{completedCount} out of {totalCount} ({percentage}%) complete. <span className="hidden sm:inline">Showing {filteredItems.length} items.</span></p>
+                                    <div className="flex space-x-2 mt-2 sm:mt-0">
+                                        <button onClick={resetFilters} className="flex items-center space-x-2 px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-md text-xs font-semibold transition-colors">
+                                            <XIcon className="w-3 h-3"/><span>RESET</span>
+                                        </button>
+                                        <button onClick={() => setIsFilterVisible(!isFilterVisible)} className="flex items-center space-x-2 px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-md text-xs font-semibold transition-colors">
+                                            <FilterIcon className="w-3 h-3"/><span>FILTERS</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="w-full bg-gray-700 rounded-full h-2 mt-2">
+                                    <div className="h-2 rounded-full transition-all duration-500" style={{ width: `${percentage}%`, backgroundColor: color }}></div>
+                                </div>
+                            </div>
+                            
+                            {isFilterVisible && <FilterPanel {...{searchTerm, onSearchTermChange: setSearchTerm, statusFilters, onStatusFilterChange: setStatusFilters, resultFilters, onResultFilterChange: setResultFilters, priorityFilters, onPriorityFilterChange: setPriorityFilters}} />}
 
-                    <div className="mt-8">
-                        <div className="hidden sm:grid grid-cols-[auto_1fr_auto] gap-4 px-4 py-2 border-b border-gray-700 text-xs text-gray-500 font-bold uppercase tracking-wider">
-                           <div>Control</div>
-                           <div className="text-center">Status</div>
-                           <div className="text-center">Result</div>
-                        </div>
-                        <div>
-                            {filteredItems.length > 0 ? (
-                                filteredItems.map(item => (
-                                    <ChecklistItemRow 
-                                        key={item.id} 
-                                        item={item}
-                                        onUpdate={updatedItem => onUpdateItem(item.id, updatedItem)}
-                                        isAdminLoggedIn={isAdminLoggedIn}
-                                        onEditClick={() => onEditItemClick(item)}
-                                        onDeleteClick={() => onDeleteItem(id, item.id)}
-                                    />
-                                ))
-                            ) : (
-                                <p className="text-center text-gray-500 py-8">No items match your filters.</p>
-                            )}
-                        </div>
-                    </div>
+                            <div className="mt-8">
+                                <div className="hidden sm:grid grid-cols-[auto_1fr_auto] gap-4 px-4 py-2 border-b border-gray-700 text-xs text-gray-500 font-bold uppercase tracking-wider">
+                                <div>Control</div><div className="text-center">Status</div><div className="text-center">Result</div>
+                                </div>
+                                <div>
+                                    {filteredItems.length > 0 ? (
+                                        filteredItems.map(item => <ChecklistItemRow key={item.id} item={item} onUpdate={onUpdateItem} isAdminLoggedIn={isAdminLoggedIn} onEditClick={() => onEditItemClick(item)} onDeleteClick={() => onDeleteItem(item.id)} />)
+                                    ) : ( <p className="text-center text-gray-500 py-8">No items match your filters.</p> )}
+                                </div>
+                            </div>
+                        </>
+                    )}
                 </div>
             </Card>
+            {isAdminLoggedIn && isFolderEmpty && (
+                 <div className="mt-8 text-center text-gray-500">
+                    <p className="mb-4">This folder is empty. You can add sub-folders or checklist items.</p>
+                </div>
+            )}
             {isAdminLoggedIn && (
-                <div className="mt-8">
-                    <AddChecklistItemForm onAddItem={handleAddItem} />
+                <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                    {isFolderEmpty && <AddDomainForm onAddDomain={onAddDomain} />}
+                    <AddChecklistItemForm onAddItem={onAddNewItem} />
                 </div>
             )}
         </div>

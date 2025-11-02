@@ -5,7 +5,8 @@ import { ICON_MAP } from './icons';
 import Card from './Card';
 
 interface AddCategoryFormProps {
-    onAddCategory: (newCategoryData: Omit<Category, 'id' | 'completed' | 'total' | 'items' | 'icon'>) => void;
+    // A new category created via the form will not have domains initially.
+    onAddCategory: (newCategoryData: Omit<Category, 'id' | 'completed' | 'total' | 'items' | 'icon' | 'domains'>) => void;
 }
 
 const AddCategoryForm: React.FC<AddCategoryFormProps> = ({ onAddCategory }) => {
@@ -101,6 +102,9 @@ const AddCategoryForm: React.FC<AddCategoryFormProps> = ({ onAddCategory }) => {
                     </button>
                 </div>
             </form>
+            <p className="text-xs text-gray-500 mt-4 italic text-center">
+                Note: This adds a category to your current session only. To create a folder or make permanent changes, please ask the assistant.
+            </p>
         </Card>
     );
 };

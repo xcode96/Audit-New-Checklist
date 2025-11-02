@@ -1,10 +1,10 @@
 
 import React from 'react';
 import Card from './Card';
-import type { Category } from '../types';
+import type { Domain } from '../types';
 
-interface CategoryCardProps {
-  category: Category;
+interface DomainCardProps {
+  domain: Domain;
   onClick: (id: string) => void;
 }
 
@@ -28,11 +28,10 @@ const SmallCircularProgress: React.FC<{ percentage: number; color: string }> = (
   );
 };
 
-const CategoryCard: React.FC<CategoryCardProps> = ({ category, onClick }) => {
-  const { id, title, description, icon: Icon, color, total, completed } = category;
-  
-  const allItems = category.domains.length > 0 ? category.domains.flatMap(d => d.items) : category.items;
-  const ignoredCount = allItems.filter(i => i.result === 'Not applicable').length;
+const DomainCard: React.FC<DomainCardProps> = ({ domain, onClick }) => {
+  const { id, title, description, icon: Icon, color, total, completed, items } = domain;
+
+  const ignoredCount = items.filter(i => i.result === 'Not applicable').length;
   const effectiveTotal = total - ignoredCount;
   const progress = effectiveTotal > 0 ? Math.round((completed / effectiveTotal) * 100) : 0;
 
@@ -57,4 +56,4 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, onClick }) => {
   );
 };
 
-export default CategoryCard;
+export default DomainCard;

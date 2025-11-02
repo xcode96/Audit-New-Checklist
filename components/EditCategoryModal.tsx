@@ -1,14 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
-import type { Category, IconName } from '../types';
+import type { Category, IconName, Domain } from '../types';
 import { ICON_MAP } from './icons';
 import Card from './Card';
 
 interface EditCategoryModalProps {
   isOpen: boolean;
   onClose: () => void;
-  category: Category;
-  onSave: (updatedCategory: Category) => void;
+  category: Category | Domain;
+  onSave: (updatedCategory: Category | Domain) => void;
 }
 
 const EditCategoryModal: React.FC<EditCategoryModalProps> = ({ isOpen, onClose, category, onSave }) => {
@@ -17,30 +17,46 @@ const EditCategoryModal: React.FC<EditCategoryModalProps> = ({ isOpen, onClose, 
     const [longDescription, setLongDescription] = useState('');
     const [color, setColor] = useState('#facc15');
     const [iconName, setIconName] = useState<IconName>('KeyIcon');
+    
+    const isDomain = !('iconName' in category);
 
   useEffect(() => {
     if (category) {
       setTitle(category.title);
       setDescription(category.description);
       setLongDescription(category.longDescription);
-      setColor(category.color);
-      setIconName(category.iconName);
+      if(!isDomain) {
+        setColor((category as Category).color);
+        setIconName((category as Category).iconName);
+      }
     }
-  }, [category]);
+  }, [category, isDomain]);
 
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const updatedCategory = { 
-        ...category, 
-        title, 
-        description, 
-        longDescription, 
-        color, 
-        iconName,
-        icon: ICON_MAP[iconName as IconName]
-    };
+    let updatedCategory: Category | Domain;
+
+    if(isDomain) {
+        updatedCategory = { 
+            ...category, 
+            title, 
+            description, 
+            longDescription,
+        };
+    } else {
+        updatedCategory = { 
+            ...category, 
+            title, 
+            description, 
+            longDescription, 
+            color, 
+            iconName,
+            icon: ICON_MAP[iconName as IconName]
+        };
+    }
+    
     onSave(updatedCategory);
   };
 
@@ -48,7 +64,7 @@ const EditCategoryModal: React.FC<EditCategoryModalProps> = ({ isOpen, onClose, 
     <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex justify-center items-center p-4" onClick={onClose}>
       <div className="w-full max-w-2xl" onClick={e => e.stopPropagation()}>
         <Card>
-            <h3 className="text-xl font-bold text-white mb-4">Edit Category</h3>
+            <h3 className="text-xl font-bold text-white mb-4">Edit {isDomain ? 'Domain' : 'Category'}</h3>
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                  <div className="md:col-span-2">
                     <label htmlFor="edit-cat-title" className="block text-sm font-medium text-gray-400">Title</label>
@@ -80,29 +96,33 @@ const EditCategoryModal: React.FC<EditCategoryModalProps> = ({ isOpen, onClose, 
                         className="mt-1 block w-full bg-[#1a1e26] border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
                     />
                 </div>
-                <div>
-                    <label htmlFor="edit-cat-icon" className="block text-sm font-medium text-gray-400">Icon</label>
-                    <select
-                        id="edit-cat-icon"
-                        value={iconName}
-                        onChange={(e) => setIconName(e.target.value as IconName)}
-                        className="mt-1 block w-full bg-[#1a1e26] border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
-                    >
-                        {Object.keys(ICON_MAP).map(name => (
-                            <option key={name} value={name}>{name}</option>
-                        ))}
-                    </select>
-                </div>
-                <div>
-                    <label htmlFor="edit-cat-color" className="block text-sm font-medium text-gray-400">Color</label>
-                    <input
-                        type="color"
-                        id="edit-cat-color"
-                        value={color}
-                        onChange={(e) => setColor(e.target.value)}
-                        className="mt-1 block w-full h-10 bg-[#1a1e26] border border-gray-600 rounded-md shadow-sm p-1"
-                    />
-                </div>
+                {!isDomain && (
+                    <>
+                        <div>
+                            <label htmlFor="edit-cat-icon" className="block text-sm font-medium text-gray-400">Icon</label>
+                            <select
+                                id="edit-cat-icon"
+                                value={iconName}
+                                onChange={(e) => setIconName(e.target.value as IconName)}
+                                className="mt-1 block w-full bg-[#1a1e26] border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
+                            >
+                                {Object.keys(ICON_MAP).map(name => (
+                                    <option key={name} value={name}>{name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label htmlFor="edit-cat-color" className="block text-sm font-medium text-gray-400">Color</label>
+                            <input
+                                type="color"
+                                id="edit-cat-color"
+                                value={color}
+                                onChange={(e) => setColor(e.target.value)}
+                                className="mt-1 block w-full h-10 bg-[#1a1e26] border border-gray-600 rounded-md shadow-sm p-1"
+                            />
+                        </div>
+                    </>
+                )}
                 <div className="md:col-span-2 flex justify-end space-x-3">
                     <button
                         type="button"

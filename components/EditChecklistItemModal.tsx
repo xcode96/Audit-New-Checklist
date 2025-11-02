@@ -7,14 +7,14 @@ interface EditChecklistItemModalProps {
   isOpen: boolean;
   onClose: () => void;
   item: ChecklistItem;
-  categoryId: string;
-  onSave: (categoryId: string, updatedItem: ChecklistItem) => void;
+  path: string[];
+  onSave: (path: string[], updatedItem: ChecklistItem) => void;
 }
 
 const statuses: Status[] = ['To do', 'In progress', 'In review', 'Done'];
 const results: Result[] = ['Not assessed', 'Non compliant', 'Partially compliant', 'Compliant', 'Not applicable'];
 
-const EditChecklistItemModal: React.FC<EditChecklistItemModalProps> = ({ isOpen, onClose, item, categoryId, onSave }) => {
+const EditChecklistItemModal: React.FC<EditChecklistItemModalProps> = ({ isOpen, onClose, item, path, onSave }) => {
   const [currentItem, setCurrentItem] = useState<ChecklistItem | null>(null);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const EditChecklistItemModal: React.FC<EditChecklistItemModalProps> = ({ isOpen,
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(categoryId, currentItem);
+    onSave(path, currentItem);
   };
 
   const handleFieldChange = (field: keyof ChecklistItem, value: any) => {

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Card from './Card';
 import type { Category, RawCategory } from '../types';
@@ -11,7 +10,7 @@ interface ImportExportControlsProps {
 
 const ImportExportControls: React.FC<ImportExportControlsProps> = ({ categories, onImport }) => {
 
-  const handleExport = () => {
+  const handleExportJson = () => {
     try {
       const storableData = sanitizeCategoriesForStorage(categories);
       const dataStr = JSON.stringify(storableData, null, 2);
@@ -30,6 +29,80 @@ const ImportExportControls: React.FC<ImportExportControlsProps> = ({ categories,
     }
   };
 
+  const handleExportCsv = () => {
+    try {
+        const headers = [
+            "Category ID", "Category Title", "Domain ID", "Domain Title", "Item ID", "Control / Audit Question", 
+            "Priority", "Status", "Result", "Description", 
+            "Observation", "Evidence"
+        ];
+
+        const escapeCsvCell = (cellData: string): string => {
+            const stringData = String(cellData || '');
+            const sanitizedData = stringData.replace(/"/g, '""');
+            return `"${sanitizedData}"`;
+        };
+
+        const csvRows = [headers.join(',')];
+
+        categories.forEach(category => {
+            if (category.domains.length > 0) {
+                category.domains.forEach(domain => {
+                    domain.items.forEach(item => {
+                        const row = [
+                            category.id,
+                            category.title,
+                            domain.id,
+                            domain.title,
+                            item.id,
+                            item.security,
+                            item.priority,
+                            item.status,
+                            item.result,
+                            item.details,
+                            item.observation,
+                            item.evidence
+                        ].map(escapeCsvCell);
+                        csvRows.push(row.join(','));
+                    });
+                });
+            } else {
+                 category.items.forEach(item => {
+                    const row = [
+                        category.id,
+                        category.title,
+                        "", // No Domain ID
+                        "", // No Domain Title
+                        item.id,
+                        item.security,
+                        item.priority,
+                        item.status,
+                        item.result,
+                        item.details,
+                        item.observation,
+                        item.evidence
+                    ].map(escapeCsvCell);
+                    csvRows.push(row.join(','));
+                });
+            }
+        });
+        
+        const csvString = csvRows.join('\r\n');
+        const dataBlob = new Blob([`\uFEFF${csvString}`], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'digital-defense-checklist.csv';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error("CSV Export failed:", error);
+        alert("Could not export data as CSV. See console for details.");
+    }
+  };
+
   const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -44,7 +117,7 @@ const ImportExportControls: React.FC<ImportExportControlsProps> = ({ categories,
         const parsedData = JSON.parse(text);
 
         // Basic validation for RawCategory structure
-        if (Array.isArray(parsedData) && parsedData.length > 0 && parsedData[0].id && parsedData[0].title && Array.isArray(parsedData[0].items)) {
+        if (Array.isArray(parsedData) && parsedData.length > 0 && parsedData[0].id && parsedData[0].title) {
            if (window.confirm('Are you sure you want to import this data? This will overwrite your current checklist.')) {
              onImport(parsedData);
            }
@@ -75,16 +148,22 @@ const ImportExportControls: React.FC<ImportExportControlsProps> = ({ categories,
   return (
     <Card>
       <h3 className="text-xl font-bold text-white mb-4">Manage Data</h3>
-      <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <button
-          onClick={handleExport}
-          className="flex-1 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors"
+          onClick={handleExportJson}
+          className="w-full justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors"
         >
-          Export Data
+          Export JSON
+        </button>
+         <button
+          onClick={handleExportCsv}
+          className="w-full justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition-colors"
+        >
+          Export CSV (Excel)
         </button>
         <button
           onClick={triggerImport}
-          className="flex-1 justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 transition-colors"
+          className="w-full justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors"
         >
           Import Data
         </button>
