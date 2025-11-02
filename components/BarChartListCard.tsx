@@ -12,9 +12,10 @@ const BarChartListCard: React.FC<BarChartListCardProps> = ({ categories }) => {
     <Card>
       <ul className="space-y-4">
         {categories.map(category => {
-            const ignoredCount = category.items.filter(i => i.ignored).length;
+            const ignoredCount = category.items.filter(i => i.result === 'Not applicable').length;
             const effectiveTotal = category.total - ignoredCount;
-            const progress = effectiveTotal > 0 ? Math.round((category.completed / effectiveTotal) * 100) : 0;
+            const completedCount = category.items.filter(i => i.status === 'Done').length;
+            const progress = effectiveTotal > 0 ? Math.round((completedCount / effectiveTotal) * 100) : 0;
 
             return (
                 <li key={category.id} className="flex items-center space-x-3">

@@ -83,15 +83,17 @@ const App: React.FC = () => {
   };
   
   // Checklist Item CRUD
-  const handleAddNewItem = (categoryId: string, newItem: Omit<ChecklistItem, 'id' | 'completed' | 'ignored'>) => {
+  const handleAddNewItem = (categoryId: string, newItem: Omit<ChecklistItem, 'id' | 'status' | 'result' | 'observation' | 'evidence'>) => {
     setCategories(prevCategories =>
       prevCategories.map(category => {
         if (category.id === categoryId) {
           const fullNewItem: ChecklistItem = {
             ...newItem,
             id: `${categoryId}-${Date.now()}`,
-            completed: false,
-            ignored: false,
+            status: 'To do',
+            result: 'Not assessed',
+            observation: '',
+            evidence: '',
           };
           const updatedItems = [...category.items, fullNewItem];
           return { ...category, items: updatedItems, total: updatedItems.length };
@@ -101,17 +103,23 @@ const App: React.FC = () => {
     );
   };
   
-  const handleEditItem = (categoryId: string, updatedItem: ChecklistItem) => {
+  const handleUpdateItem = (categoryId: string, updatedItem: ChecklistItem) => {
      setCategories(prev => prev.map(cat => {
       if (cat.id === categoryId) {
+        const newItems = cat.items.map(item => item.id === updatedItem.id ? updatedItem : item);
+        const newCompletedCount = newItems.filter(i => i.status === 'Done').length;
         return {
           ...cat,
-          items: cat.items.map(item => item.id === updatedItem.id ? updatedItem : item)
+          items: newItems,
+          completed: newCompletedCount
         };
       }
       return cat;
     }));
-    setEditingItem(null);
+    // Close modal if it was open for this item
+    if (editingItem && editingItem.item.id === updatedItem.id) {
+        setEditingItem(null);
+    }
   };
 
   const handleDeleteItem = (categoryId: string, itemId: string) => {
@@ -119,7 +127,7 @@ const App: React.FC = () => {
         setCategories(prev => prev.map(cat => {
             if (cat.id === categoryId) {
                 const newItems = cat.items.filter(item => item.id !== itemId);
-                return { ...cat, items: newItems, total: newItems.length, completed: newItems.filter(i => i.completed).length };
+                return { ...cat, items: newItems, total: newItems.length, completed: newItems.filter(i => i.status === 'Done').length };
             }
             return cat;
         }));
@@ -151,43 +159,18 @@ const App: React.FC = () => {
         setSelectedCategoryId(null);
     }
   };
-
-  // Toggles and Resets
-  const handleToggleComplete = (categoryId: string, itemId: string, isCompleted: boolean) => {
-    setCategories(prevCategories =>
-      prevCategories.map(category => {
-        if (category.id === categoryId) {
-          const newItems = category.items.map(item =>
-            item.id === itemId ? { ...item, completed: isCompleted, ignored: isCompleted ? false : item.ignored } : item
-          );
-          const newCompletedCount = newItems.filter(i => i.completed).length;
-          return { ...category, items: newItems, completed: newCompletedCount };
-        }
-        return category;
-      })
-    );
-  };
-
-  const handleToggleIgnore = (categoryId: string, itemId: string, isIgnored: boolean) => {
-    setCategories(prevCategories =>
-      prevCategories.map(category => {
-        if (category.id === categoryId) {
-          const newItems = category.items.map(item =>
-            item.id === itemId ? { ...item, ignored: isIgnored, completed: isIgnored ? false : item.completed } : item
-          );
-          const newCompletedCount = newItems.filter(i => i.completed).length;
-          return { ...category, items: newItems, completed: newCompletedCount };
-        }
-        return category;
-      })
-    );
-  };
   
   const handleResetProgress = (categoryId: string) => {
     setCategories(prevCategories =>
       prevCategories.map(category => {
         if (category.id === categoryId) {
-          const newItems = category.items.map(item => ({...item, completed: false, ignored: false }));
+          const newItems = category.items.map(item => ({
+            ...item, 
+            status: 'To do' as const, 
+            result: 'Not assessed' as const,
+            observation: '',
+            evidence: ''
+          }));
           return { ...category, items: newItems, completed: 0 };
         }
         return category;
@@ -207,9 +190,10 @@ const App: React.FC = () => {
   const selectedCategory = categories.find(c => c.id === selectedCategoryId);
 
   const radarChartData = categories.map(category => {
-      const ignoredCount = category.items.filter(i => i.ignored).length;
+      const ignoredCount = category.items.filter(i => i.result === 'Not applicable').length;
       const effectiveTotal = category.total - ignoredCount;
-      const value = effectiveTotal > 0 ? Math.round((category.completed / effectiveTotal) * 100) : 0;
+      const completedCount = category.items.filter(i => i.status === 'Done').length;
+      const value = effectiveTotal > 0 ? Math.round((completedCount / effectiveTotal) * 100) : 0;
       return {
         subject: category.title,
         value: value,
@@ -228,8 +212,7 @@ const App: React.FC = () => {
           <CategoryDetail
             category={selectedCategory}
             onBack={() => setSelectedCategoryId(null)}
-            onToggleComplete={handleToggleComplete}
-            onToggleIgnore={handleToggleIgnore}
+            onUpdateItem={(itemId, updatedItem) => handleUpdateItem(selectedCategory.id, updatedItem)}
             onResetProgress={handleResetProgress}
             isAdminLoggedIn={isAdminLoggedIn}
             onAddNewItem={handleAddNewItem}
@@ -278,7 +261,7 @@ const App: React.FC = () => {
             onClose={() => setEditingItem(null)}
             item={editingItem.item}
             categoryId={editingItem.categoryId}
-            onSave={handleEditItem}
+            onSave={handleUpdateItem}
         />
       )}
       {editingCategory && (

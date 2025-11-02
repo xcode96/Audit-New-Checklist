@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Card from './Card';
 import CircularProgress from './CircularProgress';
@@ -10,16 +11,16 @@ interface ProgressCardProps {
 const ProgressCard: React.FC<ProgressCardProps> = ({ categories }) => {
   const allItems = categories.flatMap(c => c.items);
 
-  const totalCompleted = allItems.filter(item => item.completed).length;
+  const totalCompleted = allItems.filter(item => item.status === 'Done').length;
   const totalItems = allItems.length;
-  const totalIgnored = allItems.filter(item => item.ignored).length;
+  const totalIgnored = allItems.filter(item => item.result === 'Not applicable').length;
   const effectiveTotal = totalItems - totalIgnored;
   const overallProgress = effectiveTotal > 0 ? Math.round((totalCompleted / effectiveTotal) * 100) : 0;
 
   const calculateProgress = (priority: string) => {
     const items = allItems.filter(i => i.priority === priority || (priority === 'Essential' && i.priority === 'Basic'));
-    const completed = items.filter(i => i.completed).length;
-    const ignored = items.filter(i => i.ignored).length;
+    const completed = items.filter(i => i.status === 'Done').length;
+    const ignored = items.filter(i => i.result === 'Not applicable').length;
     const effective = items.length - ignored;
     return effective > 0 ? Math.round((completed / effective) * 100) : 0;
   };

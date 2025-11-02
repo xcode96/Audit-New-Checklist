@@ -1,24 +1,41 @@
 
-import type { Category, RawCategory, ChecklistItem, IconName } from './types';
+import type { Category, RawCategory, ChecklistItem, IconName, Status, Result } from './types';
 import { ICON_MAP, ShieldIcon } from './components/icons';
 
 // Takes raw, serializable category data and "hydrates" it with runtime properties like components and calculated fields.
 export const processRawCategories = (rawCategories: RawCategory[]): Category[] => {
   return rawCategories.map(rawCategory => {
-    const itemsWithState: ChecklistItem[] = rawCategory.items.map((item, index) => ({
-      ...item,
-      id: item.id || `${rawCategory.id}-${index}`, // Ensure ID exists
-      // FIX: Cast item to allow accessing properties that are omitted in the type, but might exist in older, unsanitized data.
-      // This provides backward compatibility while defaulting to `false` for new or sanitized items.
-      completed: (item as Partial<ChecklistItem>).completed || false,
-      ignored: (item as Partial<ChecklistItem>).ignored || false,
-    }));
+    const itemsWithState: ChecklistItem[] = rawCategory.items.map((rawItem, index) => {
+      const item = rawItem as any; // Allow access to legacy and new properties
+
+      // Data Migration: Convert old `completed`/`ignored` to new `status`/`result`
+      let status: Status = item.status || 'To do';
+      if (item.completed === true) {
+        status = 'Done';
+      }
+
+      let result: Result = item.result || 'Not assessed';
+      if (item.ignored === true) {
+        result = 'Not applicable';
+      }
+
+      return {
+        security: item.security,
+        priority: item.priority,
+        details: item.details,
+        id: item.id || `${rawCategory.id}-${index}`, // Ensure ID exists
+        status: status,
+        result: result,
+        observation: item.observation || '',
+        evidence: item.evidence || '',
+      };
+    });
 
     return {
       ...rawCategory,
       icon: ICON_MAP[rawCategory.iconName as IconName] || ShieldIcon,
       items: itemsWithState,
-      completed: itemsWithState.filter(item => item.completed).length,
+      completed: itemsWithState.filter(item => item.status === 'Done').length,
       total: itemsWithState.length,
     };
   });
@@ -29,6 +46,9 @@ export const processRawCategories = (rawCategories: RawCategory[]): Category[] =
 export const sanitizeCategoriesForStorage = (categories: Category[]): RawCategory[] => {
   return categories.map(({ icon, completed, total, ...rest }) => ({
     ...rest,
-    items: rest.items.map(({ completed, ignored, ...itemRest }) => itemRest)
+    // Only store what's necessary, omitting derived fields and legacy fields
+    items: rest.items.map(({ id, security, priority, details, status, result, observation, evidence }) => ({
+        id, security, priority, details, status, result, observation, evidence
+    })) as any,
   }));
 };

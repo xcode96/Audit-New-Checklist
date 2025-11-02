@@ -4,8 +4,7 @@ import type { ChecklistItem } from '../types';
 import Card from './Card';
 
 interface AddChecklistItemFormProps {
-    // FIX: The `id` property is generated in the parent component, so it should be omitted from the type here.
-    onAddItem: (newItem: Omit<ChecklistItem, 'id' | 'completed' | 'ignored'>) => void;
+    onAddItem: (newItem: Omit<ChecklistItem, 'id' | 'status' | 'result' | 'observation' | 'evidence'>) => void;
 }
 
 const AddChecklistItemForm: React.FC<AddChecklistItemFormProps> = ({ onAddItem }) => {

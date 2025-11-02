@@ -4,16 +4,23 @@ import { ICON_MAP } from './components/icons';
 
 export type IconName = keyof typeof ICON_MAP;
 
+export type Status = 'To do' | 'In progress' | 'In review' | 'Done';
+export type Result = 'Not assessed' | 'Non compliant' | 'Partially compliant' | 'Compliant' | 'Not applicable';
+
 export interface ChecklistItem {
   id: string;
   security: string;
   priority: 'Essential' | 'Optional' | 'Advanced' | 'Basic';
   details: string;
-  completed: boolean;
-  ignored: boolean;
+  status: Status;
+  result: Result;
+  observation: string;
+  evidence: string;
 }
 
-// Represents the pure data structure, safe for JSON serialization
+// Represents the pure data structure, safe for JSON serialization.
+// Items from localStorage or the initial JSON can have different shapes,
+// so the processor will handle normalizing this.
 export interface RawCategory {
   id: string;
   title: string;
@@ -21,7 +28,7 @@ export interface RawCategory {
   longDescription: string;
   iconName: IconName;
   color: string;
-  items: Omit<ChecklistItem, 'completed' | 'ignored'>[];
+  items: (Omit<ChecklistItem, 'status' | 'result' | 'observation' | 'evidence' | 'id'> & { id?: string, completed?: boolean, ignored?: boolean })[];
 }
 
 
