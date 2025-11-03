@@ -12,7 +12,18 @@
         "title": "Governance",
         "description": "Policies and procedures for authentication.",
         "longDescription": "Establishing a strong governance framework for authentication ensures that policies are consistently applied, roles are clearly defined, and the overall strategy aligns with business objectives.",
-        "items": [],
+        "items": [
+          {
+            "id": "governance-1762108260723",
+            "security": "all the data have been done",
+            "priority": "Optional",
+            "details": "s",
+            "status": "In review",
+            "result": "Non compliant",
+            "observation": "need to be veriify the ce",
+            "evidence": ""
+          }
+        ],
         "domains": []
       },
       {
@@ -347,5 +358,45 @@
         "domains": []
       }
     ]
+  },
+  {
+    "id": "a5--organizational-controls",
+    "title": "A.5 – Organizational Controls",
+    "description": " Define the organization’s governance, policies, and processes to manage information security systematically.",
+    "longDescription": "Organizational controls are the foundation of an Information Security Management System (ISMS). They define how an organization establishes its governance, policies, responsibilities, and processes to manage information security in a structured, consistent, and proactive manner.",
+    "iconName": "KeyIcon",
+    "color": "#14fa6c",
+    "items": [],
+    "domains": []
+  },
+  {
+    "id": "a7--physical-controls",
+    "title": "People Controls (A.6)",
+    "description": "Ensure that employees and contractors understand and fulfill their information security responsibilities.",
+    "longDescription": "People controls focus on managing the human factors of information security. They ensure that all individuals involved with the organization are properly screened, trained, and made aware of their security obligations, both during and after employment.",
+    "iconName": "GlobeIcon",
+    "color": "#f31212",
+    "items": [],
+    "domains": []
+  },
+  {
+    "id": "physical-controls-a7",
+    "title": "Physical Controls (A.7)",
+    "description": "Protect physical environments and assets from unauthorized access, damage, or interference.",
+    "longDescription": "Physical controls ensure that facilities, systems, and equipment are protected from physical threats such as theft, fire, or environmental damage. They establish secure perimeters, control access to buildings and rooms, and safeguard infrastructure to maintain confidentiality, integrity, and availability of information.",
+    "iconName": "MessageSquareIcon",
+    "color": "#fa14d4",
+    "items": [],
+    "domains": []
+  },
+  {
+    "id": "technological-controls-a8",
+    "title": "Technological Controls (A.8)",
+    "description": "Implement technical safeguards to protect systems, networks, and data from unauthorized access, misuse, or disruption.",
+    "longDescription": "Technological controls apply technical measures to secure information systems, networks, and data against threats. These include access management, malware protection, encryption, system configuration, and continuous monitoring to ensure confidentiality, integrity, and availability of information.",
+    "iconName": "Share2Icon",
+    "color": "#14fac1",
+    "items": [],
+    "domains": []
   }
 ]
