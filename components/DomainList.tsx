@@ -1,9 +1,10 @@
 
 import React from 'react';
-import type { Category, Domain } from '../types';
+import type { Category, Domain, RawCategory } from '../types';
 import Card from './Card';
 import DomainListItem from './DomainListItem';
 import AddDomainForm from './AddDomainForm';
+import ImportExportControls from './ImportExportControls';
 
 interface DomainListProps {
   parent: Category | Domain;
@@ -15,13 +16,15 @@ interface DomainListProps {
   onEditDomain: (domain: Domain) => void;
   onDeleteDomain: (domainId: string) => void;
   onAddDomain: (newDomainData: Omit<Domain, 'id' | 'completed' | 'total' | 'items' | 'domains' | 'icon' | 'color'>) => void;
+  categories: Category[];
+  onImport: (data: RawCategory[]) => void;
 }
 
 const ArrowLeftIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
 );
 
-const DomainList: React.FC<DomainListProps> = ({ parent, path, breadcrumbs, onDomainClick, onBack, isAdminLoggedIn, onEditDomain, onDeleteDomain, onAddDomain }) => {
+const DomainList: React.FC<DomainListProps> = ({ parent, path, breadcrumbs, onDomainClick, onBack, isAdminLoggedIn, onEditDomain, onDeleteDomain, onAddDomain, categories, onImport }) => {
   const { title, longDescription, icon: Icon, color, domains } = parent;
 
   return (
@@ -66,7 +69,11 @@ const DomainList: React.FC<DomainListProps> = ({ parent, path, breadcrumbs, onDo
 
       {isAdminLoggedIn && (
         <div className="mt-8">
-            <AddDomainForm onAddDomain={onAddDomain} />
+            <h2 className="text-2xl font-bold text-white mb-4">Admin Tools</h2>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                <AddDomainForm onAddDomain={onAddDomain} />
+                <ImportExportControls categories={categories} onImport={onImport} />
+            </div>
         </div>
       )}
     </div>

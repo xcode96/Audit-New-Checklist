@@ -1,11 +1,12 @@
 
 import React, { useState, useMemo } from 'react';
-import type { Category, ChecklistItem, Status, Result, Domain } from '../types';
+import type { Category, ChecklistItem, Status, Result, Domain, RawCategory } from '../types';
 import Card from './Card';
 import ChecklistItemRow from './ChecklistItemRow';
 import AddChecklistItemForm from './AddChecklistItemForm';
 import FilterPanel from './FilterPanel';
 import AddDomainForm from './AddDomainForm';
+import ImportExportControls from './ImportExportControls';
 
 
 interface CategoryDetailProps {
@@ -21,6 +22,8 @@ interface CategoryDetailProps {
   onEditCategoryClick: () => void;
   onDeleteCategoryClick: () => void;
   onAddDomain: (newDomainData: Omit<Domain, 'id' | 'completed' | 'total' | 'items' | 'domains' | 'icon' | 'color'>) => void;
+  categories: Category[];
+  onImport: (data: RawCategory[]) => void;
 }
 
 const ArrowLeftIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
@@ -43,7 +46,8 @@ const TrashIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 const CategoryDetail: React.FC<CategoryDetailProps> = ({ 
     data, path, breadcrumbs, onBack, onUpdateItem, 
     isAdminLoggedIn, onAddNewItem, onEditItemClick, onDeleteItem,
-    onEditCategoryClick, onDeleteCategoryClick, onAddDomain
+    onEditCategoryClick, onDeleteCategoryClick, onAddDomain,
+    categories, onImport
 }) => {
     const { id, title, longDescription, items, icon: Icon, color } = data;
     
@@ -144,16 +148,22 @@ const CategoryDetail: React.FC<CategoryDetailProps> = ({
                     )}
                 </div>
             </Card>
-            {isAdminLoggedIn && isFolderEmpty && (
-                 <div className="mt-8 text-center text-gray-500">
-                    <p className="mb-4">This folder is empty. You can add sub-folders or checklist items.</p>
-                </div>
-            )}
             {isAdminLoggedIn && (
-                <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                    {isFolderEmpty && <AddDomainForm onAddDomain={onAddDomain} />}
-                    <AddChecklistItemForm onAddItem={onAddNewItem} />
-                </div>
+                <>
+                    {isFolderEmpty && (
+                         <div className="mt-8 text-center text-gray-500">
+                            <p className="mb-4">This folder is empty. You can add sub-folders or checklist items.</p>
+                        </div>
+                    )}
+                    <div className="mt-8">
+                        <h2 className="text-2xl font-bold text-white mb-4">Admin Tools</h2>
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                            {isFolderEmpty && <AddDomainForm onAddDomain={onAddDomain} />}
+                            <AddChecklistItemForm onAddItem={onAddNewItem} />
+                            <ImportExportControls categories={categories} onImport={onImport} />
+                        </div>
+                    </div>
+                </>
             )}
         </div>
     );

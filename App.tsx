@@ -258,6 +258,8 @@ const App: React.FC = () => {
                   onDeleteDomain={(id) => handleDeleteEntity([...navigationPath, id])}
                   onAddDomain={(data) => handleAddDomain(navigationPath, data)}
                   breadcrumbs={breadcrumbs}
+                  categories={categories}
+                  onImport={handleImportData}
               />
           );
       }
@@ -276,6 +278,8 @@ const App: React.FC = () => {
               onEditCategoryClick={() => setEditingCategory({ entity: currentView, path: navigationPath })}
               onDeleteCategoryClick={() => handleDeleteEntity(navigationPath)}
               onAddDomain={(data) => handleAddDomain(navigationPath, data)}
+              categories={categories}
+              onImport={handleImportData}
           />
       );
   };
