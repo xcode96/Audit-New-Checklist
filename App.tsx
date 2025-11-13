@@ -209,6 +209,17 @@ const App: React.FC = () => {
       return crumbs;
   }, [categories, navigationPath]);
 
+  const exportScopeCategories = useMemo(() => {
+    if (navigationPath.length > 0) {
+        const topLevelCategory = categories.find(c => c.id === navigationPath[0]);
+        // If a top-level category is found for the current path, scope the export to just that category.
+        // Otherwise, default to all categories (should not happen if path is valid).
+        return topLevelCategory ? [topLevelCategory] : categories;
+    }
+    // If not in a specific path (i.e., on the dashboard), export all categories.
+    return categories;
+  }, [categories, navigationPath]);
+
   if (isLoading) {
     return <div className="flex justify-center items-center min-h-screen bg-[#1a1e26] text-white">Loading...</div>;
   }
@@ -258,7 +269,7 @@ const App: React.FC = () => {
                   onDeleteDomain={(id) => handleDeleteEntity([...navigationPath, id])}
                   onAddDomain={(data) => handleAddDomain(navigationPath, data)}
                   breadcrumbs={breadcrumbs}
-                  categories={categories}
+                  categories={exportScopeCategories}
                   onImport={handleImportData}
               />
           );
@@ -278,7 +289,7 @@ const App: React.FC = () => {
               onEditCategoryClick={() => setEditingCategory({ entity: currentView, path: navigationPath })}
               onDeleteCategoryClick={() => handleDeleteEntity(navigationPath)}
               onAddDomain={(data) => handleAddDomain(navigationPath, data)}
-              categories={categories}
+              categories={exportScopeCategories}
               onImport={handleImportData}
           />
       );
