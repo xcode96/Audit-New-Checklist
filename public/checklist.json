@@ -376,8 +376,57 @@
     "longDescription": "People controls focus on managing the human factors of information security. They ensure that all individuals involved with the organization are properly screened, trained, and made aware of their security obligations, both during and after employment.",
     "iconName": "GlobeIcon",
     "color": "#f31212",
-    "items": [],
-    "domains": []
+    "domains": [
+      {
+        "title": "6.1 Screening",
+        "description": "This control ensures that individuals hired or engaged by the organization are trustworthy and suitable for their roles—especially those with access to sensitive information. It helps reduce the risk of insider threats, fraud, or misuse of information assets.",
+        "longDescription": "Background verification \nchecks on all candidates to \nbecome personnel shall be \ncarried out prior to joining \nthe organization and on an \nongoing basis taking into \nconsideration applicable \nlaws, regulations and ethics \nand be proportional to the \nbusiness requirements, the \nclassification of the \ninformation to be accessed \nand the perceived risks. ",
+        "id": "a7--physical-controls-6.1-screening",
+        "items": [
+          {
+            "id": "a7--physical-controls-6.1-screening-1762449159253",
+            "security": "Is there a screening process for onboarding full-time, part-time and temporary staff?",
+            "priority": "Optional",
+            "details": "Meaning:\nThe assessor is asking whether your organization has a formal, documented process for screening all types of personnel — not just permanent employees, but also:\n\nPart-time staff\n\nTemporary workers\n\nContractors\n\nInterns or consultants\n\nWhat to show/evidence:\n\nHR policy or recruitment policy describing the screening procedure.\n\nWorkflow or checklist for background checks.\n\nDocumentation showing consistent application across all personnel types.",
+            "status": "To do",
+            "result": "Not assessed",
+            "observation": "",
+            "evidence": ""
+          },
+          {
+            "id": "a7--physical-controls-6.1-screening-1762449204028",
+            "security": "Are background verification checks carried out on all new candidates for employment?",
+            "priority": "Optional",
+            "details": "This asks whether every new hire goes through a background verification process before employment is finalized.\nIt verifies that no one bypasses the process — even in urgent hiring situations.\n\nWhat to show/evidence:\n\nRecords of completed checks (or a confirmation from the background screening vendor).\n\nHR hiring checklist showing this step.\n\nPolicy mandating background verification before onboarding.",
+            "status": "To do",
+            "result": "Not assessed",
+            "observation": "",
+            "evidence": ""
+          },
+          {
+            "id": "a7--physical-controls-6.1-screening-1762449274200",
+            "security": "Does the background verification process consider checking professional experience, academic qualifications, independent identity verification, criminal records verification and credit review?",
+            "priority": "Advanced",
+            "details": "This question tests the scope and depth of the verification process.\nA comprehensive background check typically includes:\n\nProfessional experience: Employment history validation.\n\nAcademic qualifications: Degree/diploma verification.\n\nIdentity verification: Confirming the candidate’s legal identity.\n\nCriminal record check: Ensuring no relevant offenses that would pose risk.\n\nCredit review: (especially for financial or high-trust roles).\n\nWhat to show/evidence:\n\nVendor reports or HR internal forms listing these checks.\n\nPolicy specifying which checks apply to which job roles.\n\nExample anonymized verification results.",
+            "status": "To do",
+            "result": "Not assessed",
+            "observation": "",
+            "evidence": ""
+          },
+          {
+            "id": "a7--physical-controls-6.1-screening-1762449320855",
+            "security": "Are the checks compliant with relevant laws, regulations and ethics?",
+            "priority": "Advanced",
+            "details": "The organization must conduct checks legally and ethically. This includes:\n\nFollowing local labor laws and data protection/privacy regulations (e.g., GDPR).\n\nObtaining candidate consent before performing checks.\n\nLimiting the scope of checks to what’s necessary for the role (“proportional to the business requirements”).\n\nWhat to show/evidence:\n\nDocumentation of compliance with local laws.\n\nConsent forms from candidates.\n\nPrivacy policy explaining how candidate data is used and stored.\n\nLegal or compliance team guidance.\n",
+            "status": "To do",
+            "result": "Not assessed",
+            "observation": "",
+            "evidence": ""
+          }
+        ],
+        "domains": []
+      }
+    ]
   },
   {
     "id": "physical-controls-a7",
