@@ -533,6 +533,241 @@
           }
         ],
         "domains": []
+      },
+      {
+        "title": "6.4 Disciplinary  process ",
+        "description": "A disciplinary process shall  be formalized and  communicated to take  actions against personnel  and other relevant  interested parties who have  committed an information  security policy violation. ",
+        "longDescription": "",
+        "id": "a7--physical-controls-disciplinary-process-",
+        "items": [
+          {
+            "id": "a7--physical-controls-disciplinary-process--1763100006475",
+            "security": "Is there a formal disciplinary process that allows the organization to take action against employees who commit an information security breach?",
+            "priority": "Essential",
+            "details": "The assessor is checking whether the organization has a documented disciplinary policy that defines how violations of information security policies are handled.\n\nThe process should clearly explain:\n\nWhat constitutes a security breach\n\nTypes of disciplinary actions\n\nEscalation levels\n\nRoles and responsibilities for investigation and action",
+            "status": "To do",
+            "result": "Not assessed",
+            "observation": "What to show / Evidence:\n\nDocumented disciplinary policy or HR manual\n\nSection of employment contract referencing disciplinary actions\n\nRecords of past disciplinary actions (if applicable)",
+            "evidence": ""
+          },
+          {
+            "id": "a7--physical-controls-disciplinary-process--1763100073663",
+            "security": "Is the formal disciplinary process approved by top management?",
+            "priority": "Advanced",
+            "details": "The assessor wants to confirm that the disciplinary process has official endorsement from senior leadership, which shows commitment to enforcing information security requirements.",
+            "status": "To do",
+            "result": "Not assessed",
+            "observation": "What to show / Evidence:\n\nPolicy approval page with signatures of top management\n\nChange approval logs\n\nManagement review minutes confirming approval",
+            "evidence": ""
+          },
+          {
+            "id": "a7--physical-controls-disciplinary-process--1763100116487",
+            "security": "Is the formal disciplinary process communicated to all employees?",
+            "priority": "Optional",
+            "details": "The assessor checks whether employees are made aware of the disciplinary measures and the consequences of violating security policies.\n\nCommunication should occur through:\n\nOnboarding\n\nEmail broadcasts\n\nPolicy acknowledgment\n\nEmployee handbook\n\nAwareness training",
+            "status": "To do",
+            "result": "Not assessed",
+            "observation": "What to show / Evidence:\n\nTraining attendance records\n\nSigned policy acknowledgments\n\nEmployee handbook containing the disciplinary process\n\nIntranet or HR portal communication",
+            "evidence": ""
+          },
+          {
+            "id": "a7--physical-controls-disciplinary-process--1763100201882",
+            "security": "Does the formal disciplinary process consider relevant factors before taking action?",
+            "priority": "Optional",
+            "details": "The assessor is verifying whether the disciplinary process is fair, consistent, and proportional, taking into consideration multiple elements of the security breach.\n\nThe process should evaluate:\n\nNature of the breach (who, what, when, how)\n\nGravity of the breach and its consequences\n\nIntentional vs. unintentional behaviour\n\nFirst-time or repeated offence\n\nWhether the violator was properly trained and informed\n\nImpact on organization or interested parties\n\nLevel of negligence or malicious intent",
+            "status": "To do",
+            "result": "Not assessed",
+            "observation": "What to show / Evidence:\n\nPolicy sections outlining assessment factors\n\nCase records showing applied considerations\n\nInvestigation templates or checklists",
+            "evidence": ""
+          }
+        ],
+        "domains": []
+      },
+      {
+        "title": "6.5 Responsibilities After Termination or Change of Employment",
+        "description": "Information security  responsibilities and duties  that remain valid after  termination or change of  employment shall be  defined, enforced and  communicated to relevant  personnel and other  interested parties. ",
+        "longDescription": "",
+        "id": "a7--physical-controls-6.5-responsibilities-after-termination-or-change-of-employment",
+        "items": [
+          {
+            "id": "a7--physical-controls-6.5-responsibilities-after-termination-or-change-of-employment-1763100625019",
+            "security": "Does the employee termination process define the information security responsibilities and duties that remain valid after termination or change of job role for all full-time, part-time, and temporary staff?",
+            "priority": "Basic",
+            "details": "The assessor is verifying whether the organization has a formal and documented offboarding process that ensures personnel understand what information security duties continue even after they leave the organization or change roles.\n\nThese ongoing responsibilities include:\n\nContinuing confidentiality obligations\n\nNon-disclosure of sensitive or proprietary information\n\nReturning all organizational assets (laptop, ID card, access tokens, documents)\n\nRemoval of access rights immediately after termination\n\nProtecting customer/supplier information even after exit",
+            "status": "To do",
+            "result": "Not assessed",
+            "observation": "What to show / Evidence:\n\nOffboarding/exit procedure in HR or ISMS documentation\n\nExit clearance checklist including InfoSec responsibilities\n\nRecords proving timely access revocation\n\nTermination workflow documents from HRMS system",
+            "evidence": ""
+          },
+          {
+            "id": "a7--physical-controls-6.5-responsibilities-after-termination-or-change-of-employment-1763100675019",
+            "security": "Are the responsibilities and duties that remain valid after termination of employment or contract included in the individual’s terms and conditions of employment, contract, or agreement?",
+            "priority": "Essential",
+            "details": "The assessor wants to confirm that employees and contractors are contractually bound to maintain confidentiality and protect organizational and third-party information even after they leave the organization.\n\nThese obligations should be formally stated in:\n\nEmployment contracts\n\nConsultant/contractor agreements\n\nNon-Disclosure Agreements (NDAs)\n\nIP protection and confidentiality clauses\n\nTerms and conditions of employment or assignment",
+            "status": "To do",
+            "result": "Not assessed",
+            "observation": "What to show / Evidence:\n\nEmployment contract section on post-termination obligations\n\nNDA signed at the time of joining\n\nContractor agreements with confidentiality terms\n\nExit acknowledgment or certification form confirming awareness",
+            "evidence": ""
+          }
+        ],
+        "domains": []
+      },
+      {
+        "title": "6.6 Confidentiality or Non-Disclosure Agreements (NDAs)",
+        "description": "Confidentiality or non disclosure agreements  reflecting the organization’s  needs for the protection of  information should be  identified, documented,  regularly reviewed and  signed by personnel and  other relevant interested  parties.",
+        "longDescription": "",
+        "id": "a7--physical-controls-6.6-confidentiality-or-non-disclosure-agreements-(ndas)",
+        "items": [
+          {
+            "id": "a7--physical-controls-6.6-confidentiality-or-non-disclosure-agreements-(ndas)-1763100862560",
+            "security": "Are all full-time, part-time, and temporary staff required to sign a confidentiality or non-disclosure agreement (NDA) prior to gaining access to the organization’s confidential information and associated assets?",
+            "priority": "Advanced",
+            "details": "The assessor is verifying whether the organization ensures that no employee or contractor is given access to sensitive, confidential, or proprietary information before signing a formal NDA or confidentiality clause.\n\nThis includes:\n\nNew hires (full-time, part-time, interns, temporary workers)\n\nContractors and third-party personnel\n\nConsultants with system or data access\n\nThe NDA must be signed before access to systems, networks, or data is provided.",
+            "status": "To do",
+            "result": "Not assessed",
+            "observation": "What to show / Evidence:\n\nNDA templates used by HR or Legal\n\nSigned NDA forms for a sample of employees\n\nContract agreements containing confidentiality clauses\n\nOnboarding checklist proving NDA is completed before access provisioning",
+            "evidence": ""
+          },
+          {
+            "id": "a7--physical-controls-6.6-confidentiality-or-non-disclosure-agreements-(ndas)-1763100899128",
+            "security": "Do the confidentiality or non-disclosure agreements include the required elements, such as:  Definition of the information to be protected  Validity period of the agreement  Ownership of information, trade secrets, and intellectual property  Terms for returning or destroying information upon termination?",
+            "priority": "Basic",
+            "details": "Meaning:\nThe assessor is checking whether the NDA is comprehensive and legally enforceable, and whether it clearly outlines each party’s obligations regarding confidential information.\n\nA complete NDA should include:\n\nDescription of protected information (e.g., business data, customer info, IP, credentials)\n\nDuration/validity (e.g., obligations continue after employment ends)\n\nOwnership clauses for information, trade secrets, and intellectual property\n\nReturn or destruction obligations for documents, equipment, or digital assets at exit\n\nConsequences for breach of confidentiality\n\nRestrictions on unauthorized sharing or disclosure",
+            "status": "To do",
+            "result": "Not assessed",
+            "observation": "What to show / Evidence:\n\nNDA document with all required clauses\n\nLegal review or version history proving regular updates\n\nSigned copies for employees, contractors, and vendors\n\nExit checklist showing return/destruction of information at termination",
+            "evidence": ""
+          }
+        ],
+        "domains": []
+      },
+      {
+        "title": "6.7 Remote  working ",
+        "description": "Security measures shall be  implemented when  personnel are working  remotely to protect  information accessed,  processed or stored outside  the organization’s premises.",
+        "longDescription": "",
+        "id": "a7--physical-controls-6.7-remote-working-",
+        "items": [
+          {
+            "id": "a7--physical-controls-6.7-remote-working--1763101143706",
+            "security": "Is there a formal, documented policy that defines the information security requirements for allowing personnel to work remotely and access the organization’s information?",
+            "priority": "Advanced",
+            "details": "The assessor is verifying whether the organization has an officially approved and published Remote Working Policy that clearly states the conditions, controls, and security measures required for accessing corporate information outside the organization’s premises.\n\nA formal Remote Working Policy should:\n\nDefine who is permitted to work remotely\n\nList security requirements such as VPN, MFA, encryption, secure Wi-Fi\n\nSpecify acceptable use rules for devices and remote access\n\nInclude physical security expectations (private workspace, lockable storage, no sharing of devices)\n\nDefine handling, storage, printing, and disposal rules for sensitive information\n\nEstablish responsibilities of employees when working from home or public places\n\nBe reviewed regularly and approved by top management",
+            "status": "To do",
+            "result": "Not assessed",
+            "observation": "What to Show / Evidence\n\nOfficial Remote Working Policy document (PDF or online copy)\n\nApproval records from top management\n\nPolicy communication records to employees (emails, LMS, HR onboarding documents)\n\nEmployee acknowledgment logs or digital signatures\nX`\nVersion history showing policy updates and reviews",
+            "evidence": ""
+          },
+          {
+            "id": "a7--physical-controls-6.7-remote-working--1763101309884",
+            "security": "Is the remote working policy formally approved by top management before being implemented and communicated?",
+            "priority": "Optional",
+            "details": "The assessor wants to confirm that the Remote Working Policy has received official authorization from the organization’s top management, ensuring:\n\nThe policy aligns with business goals\n\nManagement accepts responsibility for enforcing it\n\nAdequate resources are allocated to support its requirements\n\nThe policy carries organizational authority and is not an informal or draft document\n\nTop management approval demonstrates that:\n\nThe policy is recognized as mandatory\n\nIt supports ISO 27001 governance requirements\n\nEmployees must comply with its rules and controls\n\nApproval typically includes signatures, email confirmations, or governance meeting minutes.",
+            "status": "To do",
+            "result": "Not assessed",
+            "observation": "What to Show / Evidence\n\nApproved policy document with management signatures/date\n\nBoard or management meeting minutes showing approval\n\nEmail or memo from leadership confirming policy adoption\n\nDocument control records showing version approval\n\nPolicy management system logs showing “Approved” status",
+            "evidence": ""
+          },
+          {
+            "id": "a7--physical-controls-6.7-remote-working--1763101404025",
+            "security": "Is the remote working policy formally communicated to all full-time, part-time, and temporary staff who work remotely?",
+            "priority": "Optional",
+            "details": "The assessor is checking whether the organization ensures that every individual who works remotely—regardless of their employment type—receives, understands, and acknowledges the Remote Working Policy.\n\nThis ensures:\n\nAll remote workers are aware of security requirements\n\nNo personnel are operating without proper guidance\n\nPolicy expectations, responsibilities, and restrictions are clearly understood\n\nCompliance is maintained uniformly across the organization\n\nCommunication should be done before remote access is granted.\n\nEffective communication may include:\n\nEmail distribution\n\nHR onboarding workflows\n\nLearning Management System (LMS) modules\n\nInternal portals or document management systems\n\nMandatory acknowledgments or digital signatures",
+            "status": "To do",
+            "result": "Not assessed",
+            "observation": "What to Show / Evidence\n\nEmail communication logs or announcements\n\nLMS training completion reports\n\nHR onboarding checklists including policy acknowledgment\n\nSigned acknowledgment forms (HR, DMS, or digital signatures)\n\nEvidence that part-time, temporary, and contractual staff also received the policy",
+            "evidence": ""
+          },
+          {
+            "id": "a7--physical-controls-6.7-remote-working--1763101492091",
+            "security": "Does the remote working policy include physical security requirements to ensure protection of organizational information at remote work locations?",
+            "priority": "Optional",
+            "details": "The assessor wants to verify whether the Remote Working Policy clearly defines physical security expectations for employees working outside the organization’s premises.\n\nThis ensures that sensitive information remains protected even when personnel work from:\n\nHome offices\n\nClient locations\n\nShared coworking spaces\n\nPublic environments (hotels, cafés, airports)\n\nThe policy should address:\n\nMaintaining a secure, private workspace\n\nPreventing unauthorized individuals from viewing or accessing information\n\nUsing lockable storage (cabinets, drawers) for documents\n\nEnsuring devices are not left unattended\n\nProtecting screens from shoulder surfing in public places\n\nSecure handling of physical documents (no printing in insecure areas)\n\nSafe transport of notebooks, files, and media between locations\n\nThese controls prevent physical theft, accidental exposure, or unauthorized access.",
+            "status": "To do",
+            "result": "Not assessed",
+            "observation": "What to Show / Evidence\n\nRemote Working Policy document with a dedicated “Physical Security” section\n\nGuidelines for secure workspaces (home office setup requirements)\n\nClear desk and clear screen rules\n\nEmployee onboarding material highlighting physical security expectations\n\nAwareness training slides or LMS modules covering physical security\n\nEvidence of reminders or periodic communications sent to remote staff",
+            "evidence": ""
+          },
+          {
+            "id": "a7--physical-controls-6.7-remote-working--1763101722822",
+            "security": " Does the remote working policy  consider of the remote working site  such as lockable filing cabinets, secure  transportation between locations and  rules for remote access, clear desk,  printing and disposal of information. ",
+            "priority": "Advanced",
+            "details": "The assessor is checking whether the organization’s Remote Working Policy clearly defines how information should be protected at the remote work location—both physically and operationally.\n\nA strong policy should include guidance on:\n\n1. Secure Storage:\n\nUse of lockable filing cabinets or drawers\n\nNo sensitive documents left in open or shared spaces\n\nSecure storage for laptops, removable media, and printed materials\n\n2. Secure Transportation:\n\nSafe movement of files and devices between office and home\n\nUse of sealed folders/bags\n\nAvoiding unattended equipment during travel\n\n3. Remote Access Requirements:\n\nUse of VPN, MFA, encryption, and approved devices only\n\nNo use of personal, public, or shared systems for corporate data\n\n4. Clear Desk & Clear Screen:\n\nScreens locked when away\n\nSensitive items cleared from the desk when not in use\n\nProtection from shoulder surfing or observers\n\n5. Printing Controls:\n\nPrinting allowed only when necessary\n\nUse of home printers secured from shared access\n\nNo printing in public or coworking spaces\n\n6. Disposal of Information:\n\nShredding or secure destruction of physical documents\n\nFollowing approved disposal procedures for sensitive material\n\nNo disposal via home or public trash bins\n\nThis ensures that sensitive data is not exposed through poor remote handling practices.",
+            "status": "To do",
+            "result": "Not assessed",
+            "observation": "What to Show / Evidence\n\nSections in the Remote Working Policy covering storage, transport, access, clear desk, and disposal\n\nSecure workspace guidelines or setup checklists\n\nEmployee awareness training content addressing information handling at home\n\nEvidence of periodic reminders or internal communications\n\nDocumentation that employees acknowledged these requirements\n\nPhotos or self-attestation forms (if implemented) showing secure home workspace setup",
+            "evidence": ""
+          },
+          {
+            "id": "a7--physical-controls-6.7-remote-working--1763101886210",
+            "security": "Does the remote working policy include communications security requirements, ensuring that all data transmitted from remote locations is protected from interception, tampering, or unauthorized access?",
+            "priority": "Advanced",
+            "details": "The assessor is checking whether the Remote Working Policy defines clear rules and security controls for how employees should communicate and access organizational information while working remotely.\n\nA robust remote communications security section should include:\n\n1. Secure Connection Requirements\n\nMandatory VPN usage\n\nEncrypted communication channels (HTTPS, TLS-encrypted email, encrypted messaging tools)\n\nProhibition of insecure or open Wi-Fi networks\n\n2. Authentication Controls\n\nMandatory MFA for remote access\n\nStrong password policies\n\nDevice identity verification (trusted devices only)\n\n3. Network Security Controls\n\nUse of organization-approved firewalls, endpoint protection, and anti-malware tools\n\nBlocking of unauthorized or risky communication applications\n\nRestrictions on peer-to-peer tools, public proxies, or anonymous networks\n\n4. Email & Messaging Security\n\nRules on sending sensitive data (encryption, approval, classification)\n\nProhibition of personal email or consumer messaging apps for work content\n\n5. Secure Use of Collaboration Tools\n\nGuidelines for video conferencing (waiting rooms, no public meeting links)\n\nRestrictions on file sharing platforms unless approved (e.g., SharePoint, OneDrive)\n\nThese requirements ensure that information remains confidential, authenticated, and protected in transit, even outside the corporate network.",
+            "status": "To do",
+            "result": "Not assessed",
+            "observation": "What to Show / Evidence\n\nRemote Working Policy with a dedicated Communications Security section\n\nVPN, MFA, and endpoint protection enforcement records\n\nNetwork usage guidelines or acceptable use policies\n\nEmail security guidelines and classification rules\n\nScreenshots or logs showing secure communication tools in use\n\nEmployee training material related to communication security",
+            "evidence": ""
+          },
+          {
+            "id": "a7--physical-controls-6.7-remote-working--1763101956364",
+            "security": "Does the remote working policy address the risk of unauthorized access to information or resources when employees work in public locations (e.g., cafés, airports, coworking spaces)?",
+            "priority": "Optional",
+            "details": "The assessor is verifying whether the organization has defined how employees should protect sensitive information when working in public or semi-public environments where strangers may be able to observe or access data.\n\nA strong policy should include:\n\n1. Screen Protection:\n\nMandatory use of screen privacy filters\n\nProhibition of working with sensitive information in open public areas\n\nRequirement to lock the screen when stepping away\n\n2. Physical Awareness:\n\nAvoiding shoulder surfing or visibility to nearby individuals\n\nKeeping devices within reach at all times\n\nNot leaving laptops or documents unattended\n\n3. Public Network Risks:\n\nAvoiding public Wi-Fi or mandatory use of VPN when unavoidable\n\nNo direct access to corporate apps without secure channels\n\nRestrictions on using unknown or untrusted networks\n\n4. Audio/Conversation Security:\n\nAvoid discussing confidential topics in public\n\nUse of headsets instead of speakerphones\n\nAwareness of surroundings during calls or meetings\n\n5. Handling of Documents and Devices:\n\nNo printing or reading sensitive documents in public\n\nSecurely carrying laptops and files using protective bags\n\nNo disposal of documents in public areas\n\nThese controls minimize the risk of accidental exposure or malicious access in public zones.",
+            "status": "To do",
+            "result": "Not assessed",
+            "observation": "What to Show / Evidence\n\nRemote Working Policy section addressing public place usage\n\nClear guidelines in Acceptable Use or BYOD policies\n\nAwareness training modules covering risks of public working\n\nCommunication reminders sent to employees\n\nEmployee acknowledgment or compliance tracking",
+            "evidence": ""
+          },
+          {
+            "id": "a7--physical-controls-6.7-remote-working--1763102016948",
+            "security": "Does the remote working policy require the use of security measures such as firewalls, anti-malware tools, endpoint protection, and other defensive controls on devices used for remote access?",
+            "priority": "Advanced",
+            "details": "The assessor is checking whether the Remote Working Policy ensures that all devices used for remote work—whether company-issued or approved personal devices—have appropriate baseline security protections.\n\nA comprehensive policy should require:\n\n1. Firewalls:\n\nEnabled host-based firewalls on all work devices\n\nBlocking unauthorized inbound/outbound connections\n\nRestricting access to untrusted networks\n\n2. Anti-Malware & Endpoint Protection:\n\nMandatory installation of organization-approved anti-malware tools\n\nReal-time protection and regular scanning\n\nProhibition of disabling security controls without authorization\n\n3. Security Updates & Patching:\n\nUp-to-date OS and application patches\n\nAutomatic updates enabled\n\nRegular compliance checks by IT or security teams\n\n4. Device Hardening:\n\nFull disk encryption\n\nUSB and external media restrictions\n\nApplication whitelisting or zero-trust endpoint controls\n\n5. Network Security:\n\nEnforced secure configurations for home routers (e.g., WPA3, strong passwords)\n\nProhibiting outdated or insecure network equipment\n\nThese controls reduce risks of malware infections, data breaches, or unauthorized access when accessing corporate resources remotely.",
+            "status": "To do",
+            "result": "Not assessed",
+            "observation": "What to Show / Evidence\n\nRemote Working Policy document highlighting firewall and anti-malware requirements\n\nEndpoint protection deployment reports\n\nDevice compliance logs (MDM, EDR, or AV dashboards)\n\nScreenshots or logs showing firewall and EDR tools installed\n\nPatch management reports for remote endpoints\n\nAwareness training materials for secure device usage",
+            "evidence": ""
+          }
+        ],
+        "domains": []
+      },
+      {
+        "title": "6.8 Information  security event  reporting",
+        "description": "The organization shall  provide a mechanism for  personnel to report  observed or suspected  information security events  through appropriate  channels in a timely  manner.",
+        "longDescription": "",
+        "id": "a7--physical-controls-6.8-information-security-event-reporting",
+        "items": [
+          {
+            "id": "a7--physical-controls-6.8-information-security-event-reporting-1763102140041",
+            "security": "Are all full-time, part-time, and temporary staff made aware of their responsibility to report observed or suspected information security events?",
+            "priority": "Optional",
+            "details": "The assessor is checking whether personnel understand that reporting security events is mandatory, not optional.\nThis includes events like:\n\nSuspicious emails or phishing attempts\n\nUnauthorized system access\n\nLost/stolen devices\n\nMalware infections\n\nAccidental data exposure\n\nPolicy violations\n\nThe organization must ensure every individual knows they are personally accountable for reporting these events promptly.\n\nAwareness may come through:\n\nSecurity training\n\nEmployee handbooks\n\nPolicy documents\n\nOnboarding programs\n\nInternal communications (email, portal, posters)",
+            "status": "To do",
+            "result": "Not assessed",
+            "observation": "What to Show / Evidence\n\nISMS policies referencing reporting responsibilities\n\nSecurity awareness training content\n\nTraining attendance or completion reports\n\nHR onboarding documents emphasizing reporting duties\n\nCommunication logs reminding employees of reporting responsibility",
+            "evidence": ""
+          },
+          {
+            "id": "a7--physical-controls-6.8-information-security-event-reporting-1763102192345",
+            "security": "Are all full-time, part-time, and temporary staff made aware of the procedure for reporting information security events?",
+            "priority": "Advanced",
+            "details": "The assessor is verifying if employees know how to report an incident—not just that they should report it.\n\nA documented reporting procedure should include:\n\nSteps to follow when an event is detected\n\nInitial containment actions (if applicable)\n\nWhom to contact (team/role)\n\nWhat information to include in the report\n\nTimelines (e.g., report immediately or within X hours)\n\nEscalation flow in case the primary contact is unavailable\n\nProcedure should be available and accessible to everyone.",
+            "status": "To do",
+            "result": "Not assessed",
+            "observation": "What to Show / Evidence\n\nDocumented incident reporting procedure\n\nIncident response plan with reporting workflow\n\nTraining content explaining event reporting steps\n\nOnboarding checklist including reporting procedure\n\nInternal portal/screenshots where procedure is published",
+            "evidence": ""
+          },
+          {
+            "id": "a7--physical-controls-6.8-information-security-event-reporting-1763102226619",
+            "security": "Are all full-time, part-time, and temporary staff made aware of the communication contact details and communication medium for reporting security events?",
+            "priority": "Optional",
+            "details": "The assessor is ensuring that personnel know exactly where and how to report incidents, such as:\n\nCommunication channels may include:\n\nDedicated incident reporting email (e.g., security@company.com\n)\n\nHotline or emergency phone number\n\nTicketing system (e.g., ServiceNow, Jira)\n\nSecurity operations portal or form\n\nReporting via line manager (if part of the process)\n\nEmployees must know:\n\nWho receives these reports\n\nWhich channels are primary vs. secondary\n\nWhen to use each method (e.g., urgent phone call vs. normal ticket)\n\nThis ensures quick, consistent, and reliable reporting.",
+            "status": "To do",
+            "result": "Not assessed",
+            "observation": "What to Show / Evidence\n\nPolicy or guidelines listing reporting contacts\n\nPosters, emails, or intranet pages with reporting details\n\nOnboarding materials showing communication channels\n\nAwareness campaigns or reminders\n\nIncident response plan with contact directory",
+            "evidence": ""
+          }
+        ],
+        "domains": []
       }
     ]
   },
