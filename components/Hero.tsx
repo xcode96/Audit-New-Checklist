@@ -19,7 +19,7 @@ const Hero: React.FC = () => {
     <Card className="text-center py-12 md:py-16">
       <p className="text-gray-400">The Ultimate</p>
       <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white mt-2">
-        Personal Security Checklist
+        ISO 27001:2022 Clauses 
       </h1>
       <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
         Your guide to securing your digital life and protecting your privacy
@@ -27,7 +27,7 @@ const Hero: React.FC = () => {
       <div className="mt-8 flex flex-col items-center">
         <ShieldIcon className="w-24 h-24 text-gray-500" />
         <a 
-          href="https://github.com" 
+          href="https://github.com/xcode96" 
           target="_blank" 
           rel="noopener noreferrer"
           className="mt-8 inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white bg-[#6B46C1] rounded-lg hover:bg-[#553C9A] transition-all duration-300 shadow-lg transform hover:scale-105"
